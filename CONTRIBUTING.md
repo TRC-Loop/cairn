@@ -48,6 +48,10 @@ For **bigger changes** (new feature, refactor, behavior change), **create issue 
 
 ## Developer Certificate of Origin (DCO)
 
+### Full DCO text
+
+The full, unmodified text of the Developer Certificate of Origin 1.1 is in [DCO.md](./DCO.md). When you sign off a commit, that's what you're attesting to.
+
 ### Why
 
 Two things matter when you send code to Cairn:
