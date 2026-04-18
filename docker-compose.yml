@@ -1,0 +1,14 @@
+services:
+  cairn:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      CAIRN_ENCRYPTION_KEY: ${CAIRN_ENCRYPTION_KEY:?CAIRN_ENCRYPTION_KEY required}
+      CAIRN_DB_PATH: /data/cairn.db
+    volumes:
+      - cairn-data:/data
+    restart: unless-stopped
+
+volumes:
+  cairn-data:
