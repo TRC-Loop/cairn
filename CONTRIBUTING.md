@@ -87,6 +87,9 @@ The DCO bot checks every PR. If a commit is missing the sign-off, it blocks the 
 > [!TIP]
 > If using Claude Code or Codex, use a prompt like `Add \`-s\` to git commits.`
 
+If using **GitHub Desktop**, you can enable this here (see screenshot)
+![Allow sign-off trailer option in github desktop](https://github.com/TRC-Loop/cairn/blob/2cd6b01b2c6620f66beb203be0b824a9be7349ed/.github/screenshot-github-desktop-signoff.png)
+
 #### Info you provide in your Sign-offs
 
 Cairn doesn't require your full legal name. Any of these work:
