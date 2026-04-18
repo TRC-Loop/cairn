@@ -135,4 +135,7 @@ Design inspiration: GitHub (dark), Linear, Stripe Dashboard
 Functional inspiration: Uptime Kuma, Cachet, Statuspage
 Tools: tweakcn (shadcn theme), WebAIM contrast checker, axe DevTools
 
+
+[^1]: SaaS is short for Software as a Service.
+
 [^2]: The German Accessibility Improvement Act (Barrierefreiheits­stärkungsgesetz)
