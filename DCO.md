@@ -2,6 +2,8 @@
 
 Cairn uses the Developer Certificate of Origin, version 1.1. The full text is below, copied verbatim. For instructions on how to sign off your commits, see [CONTRIBUTING.md](./CONTRIBUTING.md#developer-certificate-of-origin-dco).
 
+https://developercertificate.org
+
 ---
 
 Developer Certificate of Origin
