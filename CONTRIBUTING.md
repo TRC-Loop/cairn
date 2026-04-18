@@ -139,6 +139,17 @@ New source files should start with an SPDX header so the license is machine-read
 
 If your employer has an IP assignment agreement[^3] in your contract (common in tech jobs), check that you're allowed to contribute before you send a PR. That's on you, not us.
 
+## Principles
+
+It's **highly recommended** to read [PRINCIPLES.md](./PRINCIPLES.md). It includes things like:
+
+- Accessibilty Requirements
+- Design (Colors, Fonts, Guidelines)
+- What cairn is and isn't
+- Privacy defaults
+
+Read this especially when making changes to the User Interface/UX[^4].
+
 ## Getting Help
 
 Different questions belong in different places:
@@ -156,3 +167,5 @@ If you want to chat informally, I'm on Discord at [arne.sh/discord](https://arne
 [^2]: This is an example footnote reference.
 
 [^3]: An IP assignment agreement is a clause in your employment contract that gives your employer ownership of code you write, sometimes including code written on your own time or unrelated to your job. Most tech contracts have one. If yours does, check whether it covers open-source contributions before you send a PR.
+
+[^4]: UX stands for *U*ser E*x*perience.
