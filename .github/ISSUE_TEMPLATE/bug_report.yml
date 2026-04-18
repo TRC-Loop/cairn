@@ -1,0 +1,52 @@
+name: Bug Report
+description: Something is not working correctly.
+labels: ["bug", "triage"]
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Cairn version
+      placeholder: "v0.1.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      options:
+        - SQLite
+        - PostgreSQL
+    validations:
+      required: true
+
+  - type: input
+    id: hosting
+    attributes:
+      label: Hosted where (if applicable)
+      placeholder: "e.g. bare metal, Hetzner VPS, Raspberry Pi, Docker on Synology..."

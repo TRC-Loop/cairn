@@ -1,0 +1,27 @@
+name: Check Type Request
+description: Request support for a new monitoring check type.
+labels: ["check-type", "triage"]
+body:
+  - type: input
+    id: protocol
+    attributes:
+      label: Protocol / type
+      placeholder: "e.g. DNS, ICMP, SMTP, WHOIS"
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: Why would someone monitor this? What failure does it catch?
+    validations:
+      required: true
+
+  - type: input
+    id: example
+    attributes:
+      label: Example target
+      placeholder: "e.g. 1.1.1.1, example.com MX, smtp.example.com:587"
+    validations:
+      required: true

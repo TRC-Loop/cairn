@@ -1,0 +1,25 @@
+name: Docs Improvement
+description: Something in the docs is missing, wrong, or unclear.
+labels: ["docs", "triage"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page / section
+      placeholder: "e.g. Getting Started > Docker, Configuration Reference"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong
+      description: Missing, incorrect, or unclear content.
+    validations:
+      required: true
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix
+      description: What should it say instead?
