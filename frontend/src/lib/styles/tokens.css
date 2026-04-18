@@ -1,0 +1,49 @@
+/* Cairn design tokens — dark mode first */
+:root {
+	/* Surfaces */
+	--bg-base: #0d1117;
+	--bg-surface: #161b22;
+	--bg-elevated: #1f2937;
+	--bg-hover: #242b36;
+	--border: #30363d;
+	--border-strong: #484f58;
+
+	/* Text */
+	--text-primary: #f0f6fc;
+	--text-secondary: #8b949e;
+	--text-tertiary: #6e7681;
+
+	/* Accent */
+	--accent: #7dd3fc;
+	--accent-hover: #38bdf8;
+	--accent-strong: #0ea5e9;
+	--accent-muted: #0c4a6e;
+
+	/* Status — foreground */
+	--status-up: #34d399;
+	--status-degraded: #fbbf24;
+	--status-down: #f87171;
+	--status-maintenance: #a78bfa;
+	--status-unknown: #9ca3af;
+
+	/* Status — muted background */
+	--status-up-muted: #064e3b;
+	--status-degraded-muted: #78350f;
+	--status-down-muted: #7f1d1d;
+	--status-maintenance-muted: #4c1d95;
+}
+
+/* Light mode — status page only */
+.light {
+	--bg-base: #ffffff;
+	--bg-surface: #f6f8fa;
+	--bg-elevated: #ffffff;
+	--text-primary: #0d1117;
+	--text-secondary: #57606a;
+	--border: #d0d7de;
+
+	--status-up: #059669;
+	--status-degraded: #d97706;
+	--status-down: #dc2626;
+	--status-maintenance: #7c3aed;
+}
