@@ -165,6 +165,10 @@ Cairn is solo-maintained in spare time so replies can take a few days. Please be
 
 If you want to chat informally, I'm on Discord at [arne.sh/discord](https://arne.sh/discord). It's personal server, not Cairn-specific (But has cairn channels), and not the right place for bug reports.
 
+## Misc
+
+- You can create a 'personal' folder, which includes files for yourself. They are gitignored. Add stuff like todo-lists or ressources.
+
 [^1]: PR is short for *P*ull *R*equest
 
 [^2]: This is an example footnote reference.
