@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	pathpkg "path"
 	"strings"
 	"time"
 
@@ -252,6 +253,12 @@ func serveSPA(w http.ResponseWriter, r *http.Request, spaFS fs.FS, fileServer ht
 
 	f, err := spaFS.Open(path)
 	if err != nil {
+		// Asset paths (JS, CSS, fonts, images) that are missing should return 404,
+		// not the HTML fallback — serving HTML for a JS import causes a MIME type error.
+		if ext := pathpkg.Ext(path); ext != "" && ext != ".html" {
+			http.NotFound(w, r)
+			return
+		}
 		fallback, ferr := spaFS.Open("200.html")
 		if ferr != nil {
 			http.NotFound(w, r)
