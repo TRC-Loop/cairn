@@ -1,0 +1,15 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "404.html" -}}
+{{ template "head" . }}
+<section class="lock-wrap">
+  <div class="lock-card">
+    <p class="eyebrow">404</p>
+    <h1 class="headline">No status page here</h1>
+    <p class="sub">
+      That page slug isn't configured on this cairn instance, or it was removed.
+    </p>
+    <p class="footnote">If you followed a link, it may be stale.</p>
+  </div>
+</section>
+{{ template "tail" . }}
+{{- end -}}

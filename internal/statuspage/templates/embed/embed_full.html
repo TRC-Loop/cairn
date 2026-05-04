@@ -1,0 +1,57 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "embed_full.html" -}}
+{{ template "embed_head" . }}
+<div class="full-wrap">
+  <div class="overall pill {{ statusColor .OverallStatus }}" role="status" aria-live="polite">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="label">{{ overallLabel .OverallStatus }}</span>
+  </div>
+
+  {{- range .ActiveIncidents }}
+  <section class="banner banner-incident">
+    <div class="kicker">Active incident · {{ titlecase .Severity }}</div>
+    <p class="title">{{ .Title }}</p>
+  </section>
+  {{- end }}
+
+  {{- range .ActiveMaintenance }}
+  <section class="banner banner-maintenance">
+    <div class="kicker">{{ if .InProgress }}Maintenance in progress{{ else }}Upcoming maintenance{{ end }}</div>
+    <p class="title">{{ .Title }}</p>
+  </section>
+  {{- end }}
+
+  {{- if .Components }}
+  <ul class="comp-list">
+    {{- range .Components }}
+    <li class="comp">
+      <div class="comp-top">
+        <span class="comp-name">
+          <span class="dot {{ statusColor .Status }}" aria-hidden="true"></span>
+          {{ .Name }}
+        </span>
+        <span class="comp-status">{{ statusLabel .Status }}</span>
+      </div>
+      <div class="history-bar" aria-label="90-day history">
+        {{- range .History }}
+        <span class="tick {{ statusColor .Status }}" title="{{ formatTime .Date }} — {{ statusLabel .Status }}"></span>
+        {{- end }}
+      </div>
+      <div class="history-scale" aria-hidden="true">
+        <span>90d</span>
+        <span>{{ .UptimePercent }}</span>
+        <span>Today</span>
+      </div>
+    </li>
+    {{- end }}
+  </ul>
+  {{- end }}
+
+  {{- if .FooterHTML }}
+  <div class="embed-footer">{{ .FooterHTML | safeHTML }}</div>
+  {{- end }}
+
+  {{ template "embed_attrib" . }}
+</div>
+{{ template "embed_tail" . }}
+{{- end -}}

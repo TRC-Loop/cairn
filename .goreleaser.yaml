@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+version: 2
+project_name: cairn
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - main: ./cmd/cairn
+    binary: cairn
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.cairnVersion={{ .Version }} -X main.cairnRevision={{ .Commit }}
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: 'checksums.txt'
+
+dockers:
+  - image_templates:
+      - "ghcr.io/trc-loop/cairn:{{ .Version }}-amd64"
+      - "ghcr.io/trc-loop/cairn:latest-amd64"
+    use: buildx
+    goos: linux
+    goarch: amd64
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VERSION={{ .Version }}"
+      - "--build-arg=REVISION={{ .Commit }}"
+  - image_templates:
+      - "ghcr.io/trc-loop/cairn:{{ .Version }}-arm64"
+      - "ghcr.io/trc-loop/cairn:latest-arm64"
+    use: buildx
+    goos: linux
+    goarch: arm64
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VERSION={{ .Version }}"
+      - "--build-arg=REVISION={{ .Commit }}"
+
+docker_manifests:
+  - name_template: "ghcr.io/trc-loop/cairn:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/trc-loop/cairn:{{ .Version }}-amd64"
+      - "ghcr.io/trc-loop/cairn:{{ .Version }}-arm64"
+  - name_template: "ghcr.io/trc-loop/cairn:latest"
+    image_templates:
+      - "ghcr.io/trc-loop/cairn:latest-amd64"
+      - "ghcr.io/trc-loop/cairn:latest-arm64"
+
+release:
+  github:
+    owner: TRC-Loop
+    name: cairn
+  draft: true
+  prerelease: auto

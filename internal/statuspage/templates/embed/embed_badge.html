@@ -1,0 +1,9 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "embed_badge.html" -}}
+{{ template "embed_head" . }}
+<div class="badge badge-{{ .OverallStatus }}" role="status" aria-live="polite">
+  <span class="dot" aria-hidden="true"></span>
+  <span class="label">{{ overallLabel .OverallStatus }}</span>
+</div>
+{{ template "embed_tail" . }}
+{{- end -}}

@@ -1,0 +1,30 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "embed_compact.html" -}}
+{{ template "embed_head" . }}
+<div class="compact-wrap">
+  <div class="overall pill {{ statusColor .OverallStatus }}" role="status" aria-live="polite">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="label">{{ overallLabel .OverallStatus }}</span>
+  </div>
+  {{- if .Components }}
+  <ul class="compact-list">
+    {{- range .Components }}
+    <li>
+      <span class="c-name">
+        <span class="dot {{ statusColor .Status }}" aria-hidden="true"></span>
+        {{ .Name }}
+      </span>
+      <span class="c-status">{{ statusLabel .Status }}</span>
+    </li>
+    {{- end }}
+  </ul>
+  {{- end }}
+  {{- if .ActiveIncidents }}
+  <a class="compact-inc" href="/p/{{ .Slug }}" target="_blank" rel="noopener noreferrer">
+    {{ len .ActiveIncidents }} active incident{{ if ne (len .ActiveIncidents) 1 }}s{{ end }} →
+  </a>
+  {{- end }}
+  {{ template "embed_attrib" . }}
+</div>
+{{ template "embed_tail" . }}
+{{- end -}}

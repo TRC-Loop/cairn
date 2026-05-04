@@ -1,0 +1,74 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "status.html" -}}
+{{ template "head" . }}
+<header class="masthead {{ statusColor .OverallStatus }}">
+  <div class="masthead-top">
+    {{- if .LogoURL }}<img class="logo" src="{{ .LogoURL }}" alt="{{ .PageTitle }}">{{ end }}
+    <p class="page-title">{{ .PageTitle }}</p>
+  </div>
+  <h1 class="headline">
+    <span class="dot" aria-hidden="true"></span>
+    {{ overallLabel .OverallStatus }}
+  </h1>
+  {{- if .PageDescription }}
+  <p class="sub">{{ .PageDescription }}</p>
+  {{- end }}
+  <p class="timestamp">
+    <span class="label">Last updated</span>
+    <time datetime="{{ formatTime .UpdatedAt }}" data-live="true">{{ relativeTime .UpdatedAt }}</time>
+    <span class="sep" aria-hidden="true">·</span>
+    <span>{{ formatTime .UpdatedAt }}</span>
+  </p>
+</header>
+
+{{- range .ActiveIncidents }}
+  {{ template "incident_banner.html" . }}
+{{- end }}
+
+{{- range .ActiveMaintenance }}
+  {{ template "maintenance_banner.html" . }}
+{{- end }}
+
+<section class="panel" aria-labelledby="components-h">
+  <div class="panel-head">
+    <h2 id="components-h" class="panel-title">Components</h2>
+    <p class="panel-sub">90-day history</p>
+  </div>
+  <ul class="component-list" data-live="components">
+  {{- range .Components }}
+    {{ template "component_row.html" . }}
+  {{- else }}
+    <li class="empty">No components configured.</li>
+  {{- end }}
+  </ul>
+</section>
+
+{{- if .RecentIncidents }}
+<section class="panel" aria-labelledby="recent-h">
+  <div class="panel-head">
+    <h2 id="recent-h" class="panel-title">Recently resolved</h2>
+    <p class="panel-sub">Last 14 days</p>
+  </div>
+  <ol class="recent-list">
+  {{- range .RecentIncidents }}
+    <li class="recent-item">
+      <div class="recent-line">
+        <span class="recent-dot {{ statusColor "up" }}" aria-hidden="true"></span>
+        <span class="recent-title">{{ .Title }}</span>
+      </div>
+      <div class="recent-meta">
+        <time datetime="{{ formatTime .StartedAt }}">{{ formatTime .StartedAt }}</time>
+        <span class="sep" aria-hidden="true">→</span>
+        {{- if .ResolvedAt.Valid }}
+        <time datetime="{{ formatTime .ResolvedAt.Time }}">{{ formatTime .ResolvedAt.Time }}</time>
+        {{- else }}
+        <span>ongoing</span>
+        {{- end }}
+      </div>
+    </li>
+  {{- end }}
+  </ol>
+</section>
+{{- end }}
+{{ template "tail" . }}
+{{- end -}}

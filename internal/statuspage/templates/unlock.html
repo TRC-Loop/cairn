@@ -1,0 +1,29 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "unlock.html" -}}
+{{ template "head" . }}
+<section class="lock-wrap">
+  <div class="lock-card">
+    <p class="eyebrow">{{ .PageTitle }}</p>
+    <h1 class="headline">This status page is private</h1>
+    <p class="sub">Enter the access password shared by the operator.</p>
+    <form method="post" action="/p/{{ .Slug }}/unlock" class="lock-form" autocomplete="off">
+      <label for="password" class="visually-hidden">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        required
+        autofocus
+        autocomplete="current-password"
+        spellcheck="false"
+        placeholder="Password"
+      >
+      <button type="submit" class="btn-unlock">Unlock</button>
+    </form>
+    {{- if .UnlockError }}
+    <p role="alert" class="lock-error" data-error="true">{{ .UnlockError }}</p>
+    {{- end }}
+  </div>
+</section>
+{{ template "tail" . }}
+{{- end -}}

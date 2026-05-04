@@ -4,9 +4,16 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
 	compilerOptions: {
 		// Force runes mode for the project, except for libraries. Can be removed in svelte 6.
-		runes: ({ filename }) => filename.split(/[/\\]/).includes('node_modules') ? undefined : true
+		runes: ({ filename }) => (filename.split(/[/\\]/).includes('node_modules') ? undefined : true)
 	},
-	kit: { adapter: adapter({ fallback: '200.html' }) }
+	kit: {
+		adapter: adapter({
+			pages: '../internal/spa/dist',
+			assets: '../internal/spa/dist',
+			fallback: '200.html',
+			strict: true
+		})
+	}
 };
 
 export default config;

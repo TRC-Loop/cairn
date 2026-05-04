@@ -1,0 +1,43 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+
+{{- define "head" -}}
+<!doctype html>
+<html lang="{{ .Lang }}" data-overall="{{ .OverallStatus }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#0D1117" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>{{ .PageTitle }}</title>
+  <link rel="stylesheet" href="/static/css/status.css">
+  <link rel="icon" type="image/x-icon" href="/static/favicons/{{ .OverallStatusFavicon }}.ico">
+  {{- if .LogoURL }}
+  <link rel="apple-touch-icon" href="{{ .LogoURL }}">
+  {{- end }}
+</head>
+<body class="body-dark">
+  <a href="#main" class="skip-link">Skip to content</a>
+  <main id="main" class="shell" data-slug="{{ .Slug }}">
+{{- end -}}
+
+{{- define "tail" -}}
+  </main>
+  <footer class="foot">
+    <div class="foot-inner">
+      <div class="foot-meta">
+        <span class="foot-brand">Cairn</span>
+        <span class="foot-sep">·</span>
+        <span class="foot-hint">self-hosted status</span>
+      </div>
+      {{- if .FooterHTML }}
+      <div class="foot-custom">{{ .FooterHTML | safeHTML }}</div>
+      {{- end }}
+    </div>
+  </footer>
+  <script src="/static/js/status.js" defer></script>
+</body>
+</html>
+{{- end -}}

@@ -1,0 +1,23 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "maintenance_banner.html" -}}
+<section class="banner banner-maintenance {{ statusColor "maintenance" }}" role="status">
+  <header class="banner-head">
+    <span class="banner-kicker">
+      {{- if .InProgress -}}
+      Maintenance in progress
+      {{- else -}}
+      Upcoming maintenance
+      {{- end }}
+    </span>
+    <span class="banner-time">
+      <time datetime="{{ formatTime .StartsAt }}">{{ formatTime .StartsAt }}</time>
+      <span class="sep" aria-hidden="true">→</span>
+      <time datetime="{{ formatTime .EndsAt }}">{{ formatTime .EndsAt }}</time>
+    </span>
+  </header>
+  <h3 class="banner-title">{{ .Title }}</h3>
+  {{- if .Description }}
+  <p class="banner-body-text">{{ .Description }}</p>
+  {{- end }}
+</section>
+{{- end -}}

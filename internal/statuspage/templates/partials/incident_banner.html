@@ -1,0 +1,17 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "incident_banner.html" -}}
+<section class="banner banner-incident {{ statusColor "down" }}" role="status" aria-live="polite">
+  <header class="banner-head">
+    <span class="banner-kicker">Active incident · {{ titlecase .Severity }}</span>
+    <time class="banner-time" datetime="{{ formatTime .StartedAt }}">
+      since {{ relativeTime .StartedAt }}
+    </time>
+  </header>
+  <h3 class="banner-title">{{ .Title }}</h3>
+  {{- if .Updates }}
+  <div class="timeline">
+    {{ template "incident_timeline.html" .Updates }}
+  </div>
+  {{- end }}
+</section>
+{{- end -}}

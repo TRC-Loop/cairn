@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and discussions
+    url: https://github.com/TRC-Loop/cairn/discussions
+    about: For general questions, ideas, and discussions
+  - name: Security issues
+    url: mailto:me@arne.sh
+    about: Report security issues privately, not via public issues

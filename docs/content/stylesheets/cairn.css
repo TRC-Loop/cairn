@@ -1,0 +1,14 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+
+:root {
+  --md-primary-fg-color: #7DD3FC;
+  --md-primary-fg-color--light: #38BDF8;
+  --md-primary-fg-color--dark: #0EA5E9;
+  --md-accent-fg-color: #7DD3FC;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #0D1117;
+  --md-default-fg-color--lightest: #30363D;
+  --md-typeset-color: #F0F6FC;
+}

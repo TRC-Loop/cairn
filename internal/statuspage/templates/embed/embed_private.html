@@ -1,0 +1,9 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "embed_private.html" -}}
+{{ template "embed_head" . }}
+<div class="empty-wrap">
+  <h1>This status page is private</h1>
+  <p>Password-protected status pages cannot be embedded.</p>
+</div>
+{{ template "embed_tail" . }}
+{{- end -}}

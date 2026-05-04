@@ -1,0 +1,19 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "incident_timeline.html" -}}
+<ol class="timeline-list">
+{{- range . }}
+  <li class="timeline-item">
+    <div class="timeline-rail" aria-hidden="true">
+      <span class="timeline-dot"></span>
+    </div>
+    <div class="timeline-body">
+      <div class="timeline-head">
+        <span class="timeline-status">{{ titlecase .Status }}</span>
+        <time class="timeline-time" datetime="{{ formatTime .CreatedAt }}">{{ formatTime .CreatedAt }}</time>
+      </div>
+      <div class="timeline-msg markdown-body">{{ .MessageHTML }}</div>
+    </div>
+  </li>
+{{- end }}
+</ol>
+{{- end -}}

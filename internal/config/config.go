@@ -4,19 +4,29 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type Config struct {
-	ListenAddr    string
-	DatabasePath  string
-	EncryptionKey string
+	ListenAddr          string
+	DatabasePath        string
+	EncryptionKey       string
+	SQLiteBusyTimeoutMs int
+	BehindTLS           bool
 }
 
 func Load() (*Config, error) {
+	busyTimeout, err := strconv.Atoi(getEnv("CAIRN_SQLITE_BUSY_TIMEOUT_MS", "5000"))
+	if err != nil {
+		return nil, fmt.Errorf("CAIRN_SQLITE_BUSY_TIMEOUT_MS must be an integer: %w", err)
+	}
+
 	c := &Config{
-		ListenAddr:    getEnv("CAIRN_LISTEN_ADDR", ":8080"),
-		DatabasePath:  getEnv("CAIRN_DB_PATH", "/data/cairn.db"),
-		EncryptionKey: os.Getenv("CAIRN_ENCRYPTION_KEY"),
+		ListenAddr:          getEnv("CAIRN_LISTEN_ADDR", ":8080"),
+		DatabasePath:        getEnv("CAIRN_DB_PATH", "/data/cairn.db"),
+		EncryptionKey:       os.Getenv("CAIRN_ENCRYPTION_KEY"),
+		SQLiteBusyTimeoutMs: busyTimeout,
+		BehindTLS:           getEnv("CAIRN_BEHIND_TLS", "") == "1",
 	}
 
 	if c.EncryptionKey == "" {

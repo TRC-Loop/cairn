@@ -1,0 +1,29 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "component_row.html" -}}
+<li class="component" data-component-id="{{ .ID }}" data-status="{{ .Status }}">
+  <div class="component-top">
+    <div class="component-text">
+      <p class="component-name">{{ .Name }}</p>
+      {{- if .Description }}
+      <p class="component-desc">{{ .Description }}</p>
+      {{- end }}
+    </div>
+    <div class="component-status">
+      <span class="component-status-dot {{ statusColor .Status }}" aria-hidden="true"></span>
+      <span class="component-status-label">{{ statusLabel .Status }}</span>
+    </div>
+  </div>
+  <div class="history" aria-label="90-day status history">
+    <div class="history-bar">
+      {{- range .History }}
+      <span class="tick {{ statusColor .Status }}" title="{{ formatTime .Date }} — {{ statusLabel .Status }}"></span>
+      {{- end }}
+    </div>
+    <div class="history-scale" aria-hidden="true">
+      <span>90 days ago</span>
+      <span class="history-uptime">{{ .UptimePercent }} uptime</span>
+      <span>Today</span>
+    </div>
+  </div>
+</li>
+{{- end -}}

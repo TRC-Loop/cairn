@@ -1,0 +1,43 @@
+{{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
+{{- define "embed_head" -}}
+<!doctype html>
+<html lang="{{ .Lang }}" class="theme-{{ .Theme }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>{{ .PageTitle }}</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicons/{{ .OverallStatusFavicon }}.ico">
+  <style>{{ .EmbedCSS | safeHTML }}</style>
+</head>
+<body>
+{{- end -}}
+
+{{- define "embed_tail" -}}
+<script>
+(function () {
+  var lastHeight = 0;
+  function report() {
+    var h = document.documentElement.scrollHeight;
+    if (h === lastHeight) return;
+    lastHeight = h;
+    parent.postMessage({ cairn: true, type: 'resize', height: h }, '*');
+  }
+  report();
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(report);
+    ro.observe(document.documentElement);
+  } else {
+    setInterval(report, 500);
+  }
+})();
+</script>
+</body>
+</html>
+{{- end -}}
+
+{{- define "embed_attrib" -}}
+<p class="attrib"><a href="/p/{{ .Slug }}" target="_blank" rel="noopener noreferrer">powered by cairn</a></p>
+{{- end -}}

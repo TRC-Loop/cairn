@@ -149,7 +149,7 @@ fabric.properties
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -804,3 +804,14 @@ personal/
 # SvelteKit — un-ignore lib/ inside frontend
 !frontend/src/lib/
 !frontend/src/lib/**
+
+# Docs build artifacts
+docs/site/
+docs/.venv/
+
+# SvelteKit SPA build output embedded into Go binary.
+# Keep placeholder index.html / 200.html so `go:embed` works even without an npm build.
+!internal/spa/dist/
+internal/spa/dist/*
+!internal/spa/dist/index.html
+!internal/spa/dist/200.html
