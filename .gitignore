@@ -811,4 +811,6 @@ docs/site/
 docs/.venv/
 
 # SvelteKit SPA build output embedded into Go binary — all generated, none tracked.
+!internal/spa/dist/
 internal/spa/dist/*
+!internal/spa/dist/.gitkeep
