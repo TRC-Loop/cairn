@@ -36,37 +36,26 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 
-dockers:
-  - image_templates:
-      - "ghcr.io/trc-loop/cairn:{{ .Version }}-amd64"
-      - "ghcr.io/trc-loop/cairn:latest-amd64"
-    use: buildx
-    goos: linux
-    goarch: amd64
-    build_flag_templates:
-      - "--platform=linux/amd64"
-      - "--build-arg=VERSION={{ .Version }}"
-      - "--build-arg=REVISION={{ .Commit }}"
-  - image_templates:
-      - "ghcr.io/trc-loop/cairn:{{ .Version }}-arm64"
-      - "ghcr.io/trc-loop/cairn:latest-arm64"
-    use: buildx
-    goos: linux
-    goarch: arm64
-    build_flag_templates:
-      - "--platform=linux/arm64"
-      - "--build-arg=VERSION={{ .Version }}"
-      - "--build-arg=REVISION={{ .Commit }}"
-
-docker_manifests:
-  - name_template: "ghcr.io/trc-loop/cairn:{{ .Version }}"
-    image_templates:
-      - "ghcr.io/trc-loop/cairn:{{ .Version }}-amd64"
-      - "ghcr.io/trc-loop/cairn:{{ .Version }}-arm64"
-  - name_template: "ghcr.io/trc-loop/cairn:latest"
-    image_templates:
-      - "ghcr.io/trc-loop/cairn:latest-amd64"
-      - "ghcr.io/trc-loop/cairn:latest-arm64"
+dockers_v2:
+  - dockerfile: Dockerfile.release
+    images:
+      - "ghcr.io/trc-loop/cairn"
+    tags:
+      - "{{ .Version }}"
+      - "latest"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    labels:
+      "org.opencontainers.image.title": "Cairn"
+      "org.opencontainers.image.description": "Self-hosted monitoring, incident management, and status pages"
+      "org.opencontainers.image.url": "https://cairn.arne.sh"
+      "org.opencontainers.image.source": "https://github.com/TRC-Loop/cairn"
+      "org.opencontainers.image.documentation": "https://cairn.arne.sh"
+      "org.opencontainers.image.licenses": "AGPL-3.0-or-later"
+      "org.opencontainers.image.vendor": "TRC-Loop"
+      "org.opencontainers.image.version": "{{ .Version }}"
+      "org.opencontainers.image.revision": "{{ .Commit }}"
 
 release:
   github:

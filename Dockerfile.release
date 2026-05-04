@@ -1,0 +1,18 @@
+FROM gcr.io/distroless/static-debian12:nonroot
+
+ARG TARGETPLATFORM
+
+ENV CAIRN_DB_PATH=/data/cairn.db \
+    CAIRN_LISTEN_ADDR=:8080 \
+    CAIRN_BEHIND_TLS=false
+
+COPY ${TARGETPLATFORM}/cairn /cairn
+
+USER nonroot:nonroot
+EXPOSE 8080
+VOLUME ["/data"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD ["/cairn", "healthcheck"]
+
+ENTRYPOINT ["/cairn"]
