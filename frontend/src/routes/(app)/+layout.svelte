@@ -5,6 +5,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import { auth } from '$lib/stores/auth';
+	import { versionInfo } from '$lib/stores/version';
 	import {
 		IconChartDots3,
 		IconActivity,
@@ -41,6 +42,7 @@
 			collapsed = false;
 		}
 		mounted = true;
+		versionInfo.load();
 
 		const updateFavicon = async () => {
 			try {
@@ -133,32 +135,18 @@
 				{#if !collapsed}
 					<span class="text-sm font-medium tracking-tight">cairn</span>
 				{/if}
-				<Tooltip>
-					<TooltipTrigger>
-						{#snippet child({ props })}
-							<button
-								{...props}
-								type="button"
-								class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-								aria-label={collapsed
-									? $_('common.expand_sidebar')
-									: $_('common.collapse_sidebar')}
-								onclick={toggleCollapsed}
-							>
-								{#if collapsed}
-									<IconLayoutSidebarLeftExpand size={16} />
-								{:else}
-									<IconLayoutSidebarLeftCollapse size={16} />
-								{/if}
-							</button>
-						{/snippet}
-					</TooltipTrigger>
+				<button
+					type="button"
+					class="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+					aria-label={collapsed ? $_('common.expand_sidebar') : $_('common.collapse_sidebar')}
+					onclick={toggleCollapsed}
+				>
 					{#if collapsed}
-						<TooltipContent side="right">
-							{$_('common.expand_sidebar')}
-						</TooltipContent>
+						<IconLayoutSidebarLeftExpand size={16} />
+					{:else}
+						<IconLayoutSidebarLeftCollapse size={16} />
 					{/if}
-				</Tooltip>
+				</button>
 			</div>
 
 			<nav class="flex flex-1 flex-col gap-0.5 px-2 py-2">
@@ -268,7 +256,7 @@
 
 			<div class="flex flex-col gap-1 px-2 pb-3 pt-1">
 				{#if !collapsed}
-					<span class="px-3 text-[11px] text-muted-foreground">Cairn v0.1.0-dev</span>
+					<span class="px-3 text-[11px] text-muted-foreground">Cairn v{$versionInfo.version}</span>
 				{/if}
 				<Tooltip>
 					<TooltipTrigger>

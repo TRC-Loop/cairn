@@ -391,7 +391,8 @@ func (h *StatusPagesHandler) ReplaceFooterElements(w http.ResponseWriter, r *htt
 	if !ok {
 		return
 	}
-	if _, err := h.q.GetStatusPage(r.Context(), id); err != nil {
+	page, err := h.q.GetStatusPage(r.Context(), id)
+	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			writeError(w, http.StatusNotFound, CodeNotFound, "not found", nil)
 			return
@@ -417,6 +418,17 @@ func (h *StatusPagesHandler) ReplaceFooterElements(w http.ResponseWriter, r *htt
 			OpenInNewTab: newTab,
 		})
 	}
+	// Auto-switch to 'structured' when adding first elements to a page stuck in 'html'
+	// mode with no custom HTML (e.g. after clearing legacy HTML content).
+	autoSwitch := page.FooterMode == statuspage.FooterModeHTML &&
+		!page.CustomFooterHtml.Valid &&
+		len(req.Elements) > 0
+	if autoSwitch {
+		prior, err := h.svc.ListFooterElements(r.Context(), id)
+		if err != nil || len(prior) > 0 {
+			autoSwitch = false
+		}
+	}
 	saved, err := h.svc.ReplaceFooterElements(r.Context(), id, inputs)
 	if err != nil {
 		var fe *statuspage.ErrFooterElement
@@ -430,6 +442,11 @@ func (h *StatusPagesHandler) ReplaceFooterElements(w http.ResponseWriter, r *htt
 		h.logger.Error("replace footer elements failed", "id", id, "err", err)
 		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
 		return
+	}
+	if autoSwitch {
+		if err := h.svc.SetFooterMode(r.Context(), id, statuspage.FooterModeStructured); err != nil {
+			h.logger.Warn("auto-switch footer mode failed", "id", id, "err", err)
+		}
 	}
 	out := make([]footerElementResponse, 0, len(saved))
 	for _, el := range saved {

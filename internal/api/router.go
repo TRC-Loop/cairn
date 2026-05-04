@@ -44,6 +44,7 @@ func NewRouter(
 	backupHandler *BackupHandler,
 	twofaHandler *TwoFAHandler,
 	behindTLS bool,
+	version, revision string,
 ) http.Handler {
 	r := chi.NewRouter()
 
@@ -53,6 +54,9 @@ func NewRouter(
 
 	r.Get("/healthz", healthz)
 	r.Get("/readyz", readyz)
+	r.Get("/api/version", func(w http.ResponseWriter, _ *http.Request) {
+		writeJSON(w, http.StatusOK, map[string]string{"version": version, "revision": revision})
+	})
 
 	r.Post("/push/{token}", pushHandler(logger, db, q, incidentSvc))
 

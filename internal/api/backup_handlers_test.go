@@ -22,7 +22,7 @@ func TestBackupDownloadAdminVsRoles(t *testing.T) {
 	dbPath := filepath.Join(t.TempDir(), "live.db")
 	svc := backup.NewService(db, dbPath, "test-master-key-32bytes-padding!!", "test", logger)
 	bh := NewBackupHandler(svc, logger)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, bh, nil, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, bh, nil, false, "dev", "unknown"))
 	defer srv.Close()
 
 	seedUser(t, q, "admin", "password-long-enough", "admin")

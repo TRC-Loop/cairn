@@ -27,7 +27,7 @@ func newSettingsTestServer(t *testing.T) (*httptest.Server, *store.Queries, *aut
 	sysH := NewSystemSettingsHandler(q, logger)
 	retH := NewRetentionSettingsHandler(q, logger)
 	checksH := NewChecksHandler(q, db, logger)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, checksH, nil, nil, nil, nil, nil, usersH, sysH, retH, nil, nil, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, checksH, nil, nil, nil, nil, nil, usersH, sysH, retH, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q, sessionSvc
 }

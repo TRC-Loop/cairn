@@ -1,6 +1,10 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { _ } from 'svelte-i18n';
+	import { versionInfo } from '$lib/stores/version';
+
+	onMount(() => { versionInfo.load(); });
 </script>
 
 <div class="space-y-8">
@@ -9,7 +13,7 @@
 		<p class="mb-4 text-sm text-muted-foreground">{$_('settings.about.tagline')}</p>
 		<dl class="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2 text-sm">
 			<dt class="text-muted-foreground">{$_('settings.about.version')}</dt>
-			<dd class="font-mono text-foreground">dev</dd>
+			<dd class="font-mono text-foreground">{$versionInfo.version}</dd>
 			<dt class="text-muted-foreground">{$_('settings.about.license')}</dt>
 			<dd>AGPL-3.0-or-later</dd>
 			<dt class="text-muted-foreground">{$_('settings.about.source')}</dt>

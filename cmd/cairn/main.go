@@ -32,7 +32,7 @@ import (
 )
 
 var (
-	cairnVersion  = "0.1.0"
+	cairnVersion  = "dev"
 	cairnRevision = "unknown"
 )
 
@@ -215,7 +215,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              cfg.ListenAddr,
-		Handler:           api.NewRouter(logger, db, q, incidentSvc, statusPageHandler, sessionSvc, authHandler, setupHandler, checksHandler, componentsHandler, statusPagesHandler, notificationsHandler, incidentsHandler, maintenanceHandler, usersHandler, systemSettingsHandler, retentionSettingsHandler, backupHandler, twofaHandler, cfg.BehindTLS),
+		Handler:           api.NewRouter(logger, db, q, incidentSvc, statusPageHandler, sessionSvc, authHandler, setupHandler, checksHandler, componentsHandler, statusPagesHandler, notificationsHandler, incidentsHandler, maintenanceHandler, usersHandler, systemSettingsHandler, retentionSettingsHandler, backupHandler, twofaHandler, cfg.BehindTLS, cairnVersion, cairnRevision),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 

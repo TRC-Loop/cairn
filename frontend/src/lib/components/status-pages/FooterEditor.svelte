@@ -273,7 +273,6 @@
 										<span class="truncate text-foreground">{el.label}</span>
 									{:else}
 										<IconMinus size={14} class="shrink-0 text-muted-foreground" />
-										<span class="text-muted-foreground">—</span>
 									{/if}
 								</div>
 								<div class="flex items-center gap-1">

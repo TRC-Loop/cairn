@@ -49,7 +49,7 @@ func newMaintTestServer(t *testing.T) (*httptest.Server, *store.Queries, *mainte
 	cap := &captureMaintNotifier{}
 	svc.SetNotifier(cap)
 	mh := NewMaintenanceHandler(q, svc, logger)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, mh, nil, nil, nil, nil, nil, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, mh, nil, nil, nil, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q, svc, cap
 }

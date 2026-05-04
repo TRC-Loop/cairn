@@ -6,11 +6,13 @@
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import { onMount } from 'svelte';
 	import { auth } from '$lib/stores/auth';
 	import { ApiError } from '$lib/api/client';
 	import { toastError } from '$lib/toast';
+	import { versionInfo } from '$lib/stores/version';
 
-	const APP_VERSION = 'v0.1.0-dev';
+	onMount(() => { versionInfo.load(); });
 
 	let identifier = $state('');
 	let password = $state('');
@@ -133,7 +135,7 @@
 		{/if}
 
 		<p class="mt-8 text-center text-xs text-muted-foreground">
-			Cairn · self-hosted · {APP_VERSION}
+			Cairn · self-hosted · v{$versionInfo.version}
 		</p>
 	</div>
 </div>

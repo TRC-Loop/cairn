@@ -36,7 +36,7 @@ func newTwoFATestServer(t *testing.T) (*httptest.Server, *store.Queries, *crypto
 	usersH := NewUsersHandler(q, sessionSvc, logger)
 	twoH := NewTwoFAHandler(q, sessionSvc, box, logger, false)
 	authH.SetTwoFA(twoH)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, nil, usersH, nil, nil, nil, twoH, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, nil, usersH, nil, nil, nil, twoH, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 
 	user := seedUser(t, q, "alice", "password-long-enough", "admin")
@@ -323,7 +323,7 @@ func TestAdminResetForbiddenForViewer(t *testing.T) {
 	usersH := NewUsersHandler(q, sessionSvc, logger)
 	twoH := NewTwoFAHandler(q, sessionSvc, box, logger, false)
 	authH.SetTwoFA(twoH)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, nil, usersH, nil, nil, nil, twoH, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, nil, nil, nil, nil, usersH, nil, nil, nil, twoH, false, "dev", "unknown"))
 	defer srv.Close()
 
 	seedUser(t, q, "vw", "password-long-enough", "viewer")

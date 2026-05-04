@@ -22,7 +22,7 @@ func newSetupTestServer(t *testing.T) (*httptest.Server, *store.Queries) {
 	sessionSvc := auth.NewSessionService(q, logger)
 	authH := NewAuthHandler(q, sessionSvc, logger, false)
 	setupH := NewSetupHandler(q, db, sessionSvc, logger, false)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, setupH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, setupH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q
 }

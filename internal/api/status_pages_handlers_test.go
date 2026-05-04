@@ -23,7 +23,7 @@ func newStatusPagesTestServer(t *testing.T) (*httptest.Server, *store.Queries) {
 	authH := NewAuthHandler(q, sessionSvc, logger, false)
 	svc := statuspage.NewService(db, q, logger)
 	pagesH := NewStatusPagesHandler(q, svc, logger)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, pagesH, nil, nil, nil, nil, nil, nil, nil, nil, false))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, nil, nil, pagesH, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q
 }
