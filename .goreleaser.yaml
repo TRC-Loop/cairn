@@ -5,6 +5,8 @@ project_name: cairn
 before:
   hooks:
     - go mod tidy
+    - npm --prefix frontend ci
+    - npm --prefix frontend run build
 
 builds:
   - main: ./cmd/cairn

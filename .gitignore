@@ -810,9 +810,5 @@ personal/
 docs/site/
 docs/.venv/
 
-# SvelteKit SPA build output embedded into Go binary.
-# Keep placeholder index.html / 200.html so `go:embed` works even without an npm build.
-!internal/spa/dist/
+# SvelteKit SPA build output embedded into Go binary — all generated, none tracked.
 internal/spa/dist/*
-!internal/spa/dist/index.html
-!internal/spa/dist/200.html
