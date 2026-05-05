@@ -35,7 +35,6 @@
 	let description = $state('');
 	let logoUrl = $state('');
 	let accentColor = $state('');
-	let customFooterHtml = $state('');
 	let isDefault = $state(false);
 	let saving = $state(false);
 	let fieldErrors = $state<Record<string, string>>({});
@@ -48,7 +47,6 @@
 				description = existing.description;
 				logoUrl = existing.logo_url;
 				accentColor = existing.accent_color;
-				customFooterHtml = existing.custom_footer_html;
 				isDefault = existing.is_default;
 			} else {
 				slug = '';
@@ -56,7 +54,6 @@
 				description = '';
 				logoUrl = '';
 				accentColor = '';
-				customFooterHtml = '';
 				isDefault = false;
 			}
 			fieldErrors = {};
@@ -84,8 +81,7 @@
 					title: title.trim(),
 					description: description.trim(),
 					logo_url: logoUrl.trim(),
-					accent_color: accentColor.trim(),
-					custom_footer_html: customFooterHtml.trim()
+					accent_color: accentColor.trim()
 				});
 				toastSuccess($_('status_pages.edit.success'));
 			} else {
@@ -95,7 +91,6 @@
 					description: description.trim(),
 					logo_url: logoUrl.trim(),
 					accent_color: accentColor.trim(),
-					custom_footer_html: customFooterHtml.trim(),
 					is_default: isDefault
 				});
 				toastSuccess($_('status_pages.create.success'));
@@ -157,20 +152,7 @@
 				<Input id="sp-accent" bind:value={accentColor} placeholder="#7c8ea2" />
 			</div>
 
-			<div class="space-y-1.5">
-				<Label for="sp-footer">{$_('status_pages.fields.custom_footer_html')}</Label>
-				<textarea
-					id="sp-footer"
-					bind:value={customFooterHtml}
-					rows="3"
-					class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-				></textarea>
-				<p class="text-xs text-muted-foreground">
-					{$_('status_pages.fields.custom_footer_help')}
-				</p>
-			</div>
-
-			{#if mode === 'create'}
+{#if mode === 'create'}
 				<label class="flex items-center gap-2 text-sm">
 					<input type="checkbox" bind:checked={isDefault} class="rounded border-input" />
 					<span>{$_('status_pages.fields.is_default')}</span>
