@@ -1,6 +1,6 @@
 <img src="https://github.com/TRC-Loop/cairn/blob/main/.github/cairnbanner-rawest-v1-font-embed-safe.webp"/>
 
-Self-hosted uptime monitoring with incident management and status pages.
+<p align="center">Self-hosted uptime monitoring with incident management and status pages.</p>
 
 <p align="center">
   <a href="https://github.com/TRC-Loop/cairn/releases"><img src="https://img.shields.io/github/v/release/TRC-Loop/cairn?sort=semver" alt="Release"></a>
