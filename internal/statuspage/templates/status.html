@@ -43,6 +43,25 @@
   </ul>
 </section>
 
+{{- if .DirectMonitors }}
+<section class="panel" aria-labelledby="monitors-h">
+  <div class="panel-head">
+    <h2 id="monitors-h" class="panel-title">Monitors</h2>
+  </div>
+  <ul class="component-list">
+  {{- range .DirectMonitors }}
+    <li class="component-row">
+      <div class="comp-head">
+        <span class="comp-dot {{ statusColor .Status }}" aria-hidden="true"></span>
+        <span class="comp-name">{{ .Name }}</span>
+        <span class="comp-status">{{ statusLabel .Status }}</span>
+      </div>
+    </li>
+  {{- end }}
+  </ul>
+</section>
+{{- end }}
+
 {{- if .RecentIncidents }}
 <section class="panel" aria-labelledby="recent-h">
   <div class="panel-head">

@@ -511,6 +511,67 @@ type setComponentsRequest struct {
 	ComponentIDs []int64 `json:"component_ids"`
 }
 
+type setMonitorsRequest struct {
+	MonitorIDs []int64 `json:"monitor_ids"`
+}
+
+func (h *StatusPagesHandler) ListMonitors(w http.ResponseWriter, r *http.Request) {
+	id, ok := parseIDParam(w, r)
+	if !ok {
+		return
+	}
+	if _, err := h.q.GetStatusPage(r.Context(), id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeError(w, http.StatusNotFound, CodeNotFound, "not found", nil)
+			return
+		}
+		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+		return
+	}
+	monitors, err := h.svc.ListDirectMonitors(r.Context(), id)
+	if err != nil {
+		h.logger.Error("list status page monitors failed", "id", id, "err", err)
+		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+		return
+	}
+	out := make([]map[string]any, 0, len(monitors))
+	for _, m := range monitors {
+		out = append(out, map[string]any{
+			"id":          m.ID,
+			"name":        m.Name,
+			"last_status": m.LastStatus,
+		})
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"monitors": out})
+}
+
+func (h *StatusPagesHandler) SetMonitors(w http.ResponseWriter, r *http.Request) {
+	id, ok := parseIDParam(w, r)
+	if !ok {
+		return
+	}
+	if _, err := h.q.GetStatusPage(r.Context(), id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeError(w, http.StatusNotFound, CodeNotFound, "not found", nil)
+			return
+		}
+		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+		return
+	}
+	var req setMonitorsRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeError(w, http.StatusBadRequest, CodeInvalidJSON, "invalid json", nil)
+		return
+	}
+	if err := h.svc.SetDirectMonitors(r.Context(), id, req.MonitorIDs); err != nil {
+		h.logger.Error("set direct monitors failed", "id", id, "err", err)
+		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+		return
+	}
+	h.logger.Info("status page direct monitors updated", "id", id, "count", len(req.MonitorIDs))
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func (h *StatusPagesHandler) SetComponents(w http.ResponseWriter, r *http.Request) {
 	id, ok := parseIDParam(w, r)
 	if !ok {

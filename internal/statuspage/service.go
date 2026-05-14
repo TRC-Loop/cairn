@@ -212,6 +212,32 @@ func (s *Service) ListComponents(ctx context.Context, statusPageID int64) ([]sto
 	return s.q.ListComponentsForStatusPage(ctx, statusPageID)
 }
 
+func (s *Service) ListDirectMonitors(ctx context.Context, statusPageID int64) ([]store.Check, error) {
+	return s.q.ListMonitorsForStatusPage(ctx, statusPageID)
+}
+
+func (s *Service) SetDirectMonitors(ctx context.Context, statusPageID int64, monitorIDs []int64) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("begin tx: %w", err)
+	}
+	defer tx.Rollback()
+	qtx := s.q.WithTx(tx)
+	if err := qtx.RemoveAllMonitorsFromStatusPage(ctx, statusPageID); err != nil {
+		return fmt.Errorf("clear monitors: %w", err)
+	}
+	for idx, mid := range monitorIDs {
+		if err := qtx.AddMonitorToStatusPage(ctx, store.AddMonitorToStatusPageParams{
+			StatusPageID: statusPageID,
+			CheckID:      mid,
+			DisplayOrder: int64(idx),
+		}); err != nil {
+			return fmt.Errorf("add monitor %d: %w", mid, err)
+		}
+	}
+	return tx.Commit()
+}
+
 const (
 	FooterModeStructured = "structured"
 	FooterModeHTML       = "html"

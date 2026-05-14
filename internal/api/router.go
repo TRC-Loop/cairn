@@ -222,6 +222,8 @@ func NewRouter(
 						r.Post("/status-pages/{id}/default", statusPagesHandler.SetDefault)
 						r.Post("/status-pages/{id}/password", statusPagesHandler.SetPassword)
 						r.Put("/status-pages/{id}/components", statusPagesHandler.SetComponents)
+						r.Get("/status-pages/{id}/monitors", statusPagesHandler.ListMonitors)
+						r.Put("/status-pages/{id}/monitors", statusPagesHandler.SetMonitors)
 						r.Put("/status-pages/{id}/footer/elements", statusPagesHandler.ReplaceFooterElements)
 						r.Put("/status-pages/{id}/footer/mode", statusPagesHandler.SetFooterMode)
 						if statusPageDomainsHandler != nil {

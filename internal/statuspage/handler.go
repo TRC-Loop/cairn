@@ -126,6 +126,13 @@ type pageView struct {
 	// only set on the unlock page
 	UnlockError    string
 	HidePoweredBy  bool
+	DirectMonitors []directMonitorView
+}
+
+type directMonitorView struct {
+	ID     int64  `json:"id"`
+	Name   string `json:"name"`
+	Status string `json:"status"`
 }
 
 type componentView struct {
@@ -441,7 +448,28 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 		ActiveMaintenance: activeMaintenance,
 		RecentIncidents:   recent,
 		HidePoweredBy:     page.HidePoweredBy,
+		DirectMonitors:    h.buildDirectMonitors(ctx, page.ID),
 	}, nil
+}
+
+func (h *Handler) buildDirectMonitors(ctx context.Context, statusPageID int64) []directMonitorView {
+	checks, err := h.service.ListDirectMonitors(ctx, statusPageID)
+	if err != nil {
+		h.logger.Warn("list direct monitors failed", "page_id", statusPageID, "err", err)
+		return nil
+	}
+	if len(checks) == 0 {
+		return nil
+	}
+	out := make([]directMonitorView, 0, len(checks))
+	for _, c := range checks {
+		status := c.LastStatus
+		if status == "" {
+			status = "unknown"
+		}
+		out = append(out, directMonitorView{ID: c.ID, Name: c.Name, Status: status})
+	}
+	return out
 }
 
 func (h *Handler) buildActiveIncidents(ctx context.Context, pageComponentIDs map[int64]bool) ([]incidentView, error) {

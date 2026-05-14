@@ -159,3 +159,19 @@ export async function addStatusPageDomain(
 export async function deleteStatusPageDomain(id: number, domainId: number): Promise<void> {
 	await apiRequest(`/api/status-pages/${id}/domains/${domainId}`, { method: 'DELETE' });
 }
+
+export type DirectMonitor = { id: number; name: string; last_status: string };
+
+export async function listStatusPageMonitors(id: number): Promise<DirectMonitor[]> {
+	const { monitors } = await apiRequest<{ monitors: DirectMonitor[] }>(
+		`/api/status-pages/${id}/monitors`
+	);
+	return monitors;
+}
+
+export async function setStatusPageMonitors(id: number, monitorIds: number[]): Promise<void> {
+	await apiRequest(`/api/status-pages/${id}/monitors`, {
+		method: 'PUT',
+		body: { monitor_ids: monitorIds }
+	});
+}
