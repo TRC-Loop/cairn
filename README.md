@@ -10,6 +10,23 @@
   <a href="https://github.com/TRC-Loop/cairn/actions"><img src="https://img.shields.io/github/actions/workflow/status/TRC-Loop/cairn/release.yml?branch=main" alt="Build"></a>
 </p>
 
+<p align="center">
+  <a href="#run">Run</a> ·
+  <a href="#features">Features</a> ·
+  <a href="https://cairn.arne.sh">Docs</a> ·
+  <a href="https://status.arne.sh">Showcase</a>
+</p>
+
+## Features
+
+- HTTP, TCP, and push-based monitors
+- Incidents with auto-open on failure, auto-resolve, and configurable reopen behaviour
+- Status pages with components, custom domains, password protection, and embeddable widgets
+- Scheduled maintenance windows that suppress alerts and show on the status page
+- Notifications via webhook, email, Slack, and Discord
+- 30-day history grid and 90-day component history on the public page
+- Single Go binary, single SQLite database, no external services required
+
 ## Run
 
 ```sh
@@ -28,6 +45,7 @@ A `docker-compose.yml` is included for a more complete setup.
 ## Links
 
 - Docs: https://cairn.arne.sh
+- Showcase: https://status.arne.sh
 - [Contributing](CONTRIBUTING.md)
 - [License](LICENSE) (AGPL-3.0-or-later)
 - [Releases](https://github.com/TRC-Loop/cairn/releases)
