@@ -478,8 +478,54 @@ func (h *ChecksHandler) RecentResults(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
+	q := r.URL.Query()
+	if limitStr := q.Get("limit"); limitStr != "" {
+		limit, err := strconv.ParseInt(limitStr, 10, 64)
+		if err != nil || limit <= 0 {
+			writeError(w, http.StatusBadRequest, CodeValidationFailed, "invalid limit", nil)
+			return
+		}
+		if limit > 200 {
+			limit = 200
+		}
+		before := time.Now().UTC().Add(24 * time.Hour)
+		if b := q.Get("before"); b != "" {
+			t, err := time.Parse(time.RFC3339, b)
+			if err != nil {
+				writeError(w, http.StatusBadRequest, CodeValidationFailed, "invalid before", nil)
+				return
+			}
+			before = t
+		}
+		rows, err := h.q.ListResultsBefore(r.Context(), store.ListResultsBeforeParams{
+			CheckID:   id,
+			CheckedAt: before,
+			Limit:     limit,
+		})
+		if err != nil {
+			h.logger.Error("results before failed", "id", id, "err", err)
+			writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+			return
+		}
+		out := make([]checkResultRow, 0, len(rows))
+		for _, rr := range rows {
+			row := checkResultRow{CheckedAt: rr.CheckedAt, Status: rr.Status}
+			if rr.LatencyMs.Valid {
+				v := rr.LatencyMs.Int64
+				row.LatencyMs = &v
+			}
+			if rr.ErrorMessage.Valid {
+				v := rr.ErrorMessage.String
+				row.ErrorMessage = &v
+			}
+			out = append(out, row)
+		}
+		writeJSON(w, http.StatusOK, map[string]any{"results": out})
+		return
+	}
+
 	hours := int64(24)
-	if h := r.URL.Query().Get("hours"); h != "" {
+	if h := q.Get("hours"); h != "" {
 		if v, err := strconv.ParseInt(h, 10, 64); err == nil && v > 0 {
 			hours = v
 		}

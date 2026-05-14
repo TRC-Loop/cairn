@@ -19,6 +19,7 @@
 	import PageHeader from '$lib/components/common/PageHeader.svelte';
 	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 	import MonitorDialog from '$lib/components/monitors/MonitorDialog.svelte';
+	import RecentResultsModal from '$lib/components/monitors/RecentResultsModal.svelte';
 	import LatencyChart from '$lib/components/monitors/LatencyChart.svelte';
 	import {
 		getMonitor,
@@ -76,7 +77,8 @@
 		}
 	}
 
-	const recentResults = $derived(results.slice(-50).reverse());
+	const recentResults = $derived(results.slice(-3).reverse());
+	let allResultsOpen = $state(false);
 </script>
 
 <div class="p-6">
@@ -187,8 +189,19 @@
 						{/each}
 					</tbody>
 				</table>
+				<div class="mt-3">
+					<Button variant="secondary" size="sm" onclick={() => (allResultsOpen = true)}>
+						{$_('monitors.detail.show_all_results')}
+					</Button>
+				</div>
 			{/if}
 		</div>
+
+		<RecentResultsModal
+			open={allResultsOpen}
+			monitorId={monitor.id}
+			onOpenChange={(v) => (allResultsOpen = v)}
+		/>
 
 		<MonitorDialog
 			open={editOpen}

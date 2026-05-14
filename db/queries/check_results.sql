@@ -18,6 +18,12 @@ WHERE check_id = ?
   AND checked_at <= ?
 ORDER BY checked_at ASC;
 
+-- name: ListResultsBefore :many
+SELECT * FROM check_results
+WHERE check_id = ? AND checked_at < ?
+ORDER BY checked_at DESC
+LIMIT ?;
+
 -- name: DeleteResultsOlderThan :exec
 DELETE FROM check_results WHERE checked_at < ?;
 

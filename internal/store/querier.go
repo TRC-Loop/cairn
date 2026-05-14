@@ -131,6 +131,7 @@ type Querier interface {
 	ListPendingDeliveries(ctx context.Context, arg ListPendingDeliveriesParams) ([]NotificationDelivery, error)
 	ListRecentDeliveriesForChannel(ctx context.Context, arg ListRecentDeliveriesForChannelParams) ([]NotificationDelivery, error)
 	ListRecentResolvedIncidents(ctx context.Context, limit int64) ([]Incident, error)
+	ListResultsBefore(ctx context.Context, arg ListResultsBeforeParams) ([]CheckResult, error)
 	ListSessionsForUser(ctx context.Context, userID int64) ([]Session, error)
 	ListStatusPageComponentSettings(ctx context.Context, statusPageID int64) ([]ListStatusPageComponentSettingsRow, error)
 	ListStatusPages(ctx context.Context) ([]StatusPage, error)

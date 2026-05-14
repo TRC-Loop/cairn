@@ -350,6 +350,8 @@
 	"status_pages.component_settings.off": "Monitore ausblenden",
 	"status_pages.component_settings.default_closed": "Monitore anzeigen (eingeklappt)",
 	"status_pages.component_settings.default_open": "Monitore anzeigen (ausgeklappt)",
+	"monitors.detail.show_all_results": "Alle Ergebnisse anzeigen",
+	"monitors.detail.load_more": "Mehr laden",
 	"status_pages.create.title": "Neue Statusseite",
 	"status_pages.create.submit": "Statusseite erstellen",
 	"status_pages.create.success": "Statusseite erstellt.",

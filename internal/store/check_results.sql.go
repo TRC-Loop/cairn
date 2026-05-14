@@ -239,3 +239,47 @@ func (q *Queries) ListChecksWithRawResults(ctx context.Context) ([]int64, error)
 	}
 	return items, nil
 }
+
+const listResultsBefore = `-- name: ListResultsBefore :many
+SELECT id, check_id, checked_at, status, latency_ms, error_message, response_metadata_json FROM check_results
+WHERE check_id = ? AND checked_at < ?
+ORDER BY checked_at DESC
+LIMIT ?
+`
+
+type ListResultsBeforeParams struct {
+	CheckID   int64     `json:"check_id"`
+	CheckedAt time.Time `json:"checked_at"`
+	Limit     int64     `json:"limit"`
+}
+
+func (q *Queries) ListResultsBefore(ctx context.Context, arg ListResultsBeforeParams) ([]CheckResult, error) {
+	rows, err := q.db.QueryContext(ctx, listResultsBefore, arg.CheckID, arg.CheckedAt, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CheckResult{}
+	for rows.Next() {
+		var i CheckResult
+		if err := rows.Scan(
+			&i.ID,
+			&i.CheckID,
+			&i.CheckedAt,
+			&i.Status,
+			&i.LatencyMs,
+			&i.ErrorMessage,
+			&i.ResponseMetadataJson,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

@@ -350,6 +350,8 @@
 	"status_pages.component_settings.off": "Hide monitors",
 	"status_pages.component_settings.default_closed": "Show monitors (collapsed)",
 	"status_pages.component_settings.default_open": "Show monitors (expanded)",
+	"monitors.detail.show_all_results": "Show all results",
+	"monitors.detail.load_more": "Load more",
 	"status_pages.create.title": "New status page",
 	"status_pages.create.submit": "Create status page",
 	"status_pages.create.success": "Status page created.",
