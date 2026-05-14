@@ -126,6 +126,7 @@ type pageView struct {
 	// only set on the unlock page
 	UnlockError    string
 	HidePoweredBy  bool
+	ShowHistory    bool
 	DirectMonitors []directMonitorView
 }
 
@@ -475,6 +476,7 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 		ActiveMaintenance: activeMaintenance,
 		RecentIncidents:   recent,
 		HidePoweredBy:     page.HidePoweredBy,
+		ShowHistory:       page.ShowHistory,
 		DirectMonitors:    h.buildDirectMonitors(ctx, page.ID),
 	}, nil
 }

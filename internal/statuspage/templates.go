@@ -47,6 +47,7 @@ func templateFuncs() template.FuncMap {
 		"slice":           sliceFn,
 		"percent":         percent,
 		"titlecase":       titleCase,
+		"sub":             func(a, b int) int { return a - b },
 	}
 }
 
