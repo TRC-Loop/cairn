@@ -16,7 +16,7 @@ INSERT INTO status_pages (
 ) VALUES (
     ?, ?, ?, ?, ?, ?, ?, ?
 )
-RETURNING id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode
+RETURNING id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode, hide_powered_by, show_history
 `
 
 type CreateStatusPageParams struct {
@@ -55,6 +55,8 @@ func (q *Queries) CreateStatusPage(ctx context.Context, arg CreateStatusPagePara
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.FooterMode,
+		&i.HidePoweredBy,
+		&i.ShowHistory,
 	)
 	return i, err
 }
@@ -69,7 +71,7 @@ func (q *Queries) DeleteStatusPage(ctx context.Context, id int64) error {
 }
 
 const getDefaultStatusPage = `-- name: GetDefaultStatusPage :one
-SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode FROM status_pages WHERE is_default = 1 LIMIT 1
+SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode, hide_powered_by, show_history FROM status_pages WHERE is_default = 1 LIMIT 1
 `
 
 func (q *Queries) GetDefaultStatusPage(ctx context.Context) (StatusPage, error) {
@@ -88,12 +90,14 @@ func (q *Queries) GetDefaultStatusPage(ctx context.Context) (StatusPage, error) 
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.FooterMode,
+		&i.HidePoweredBy,
+		&i.ShowHistory,
 	)
 	return i, err
 }
 
 const getStatusPage = `-- name: GetStatusPage :one
-SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode FROM status_pages WHERE id = ? LIMIT 1
+SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode, hide_powered_by, show_history FROM status_pages WHERE id = ? LIMIT 1
 `
 
 func (q *Queries) GetStatusPage(ctx context.Context, id int64) (StatusPage, error) {
@@ -112,12 +116,14 @@ func (q *Queries) GetStatusPage(ctx context.Context, id int64) (StatusPage, erro
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.FooterMode,
+		&i.HidePoweredBy,
+		&i.ShowHistory,
 	)
 	return i, err
 }
 
 const getStatusPageBySlug = `-- name: GetStatusPageBySlug :one
-SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode FROM status_pages WHERE slug = ? LIMIT 1
+SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode, hide_powered_by, show_history FROM status_pages WHERE slug = ? LIMIT 1
 `
 
 func (q *Queries) GetStatusPageBySlug(ctx context.Context, slug string) (StatusPage, error) {
@@ -136,12 +142,14 @@ func (q *Queries) GetStatusPageBySlug(ctx context.Context, slug string) (StatusP
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.FooterMode,
+		&i.HidePoweredBy,
+		&i.ShowHistory,
 	)
 	return i, err
 }
 
 const listStatusPages = `-- name: ListStatusPages :many
-SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode FROM status_pages ORDER BY is_default DESC, title ASC
+SELECT id, slug, title, description, logo_url, accent_color, custom_footer_html, password_hash, is_default, created_at, updated_at, footer_mode, hide_powered_by, show_history FROM status_pages ORDER BY is_default DESC, title ASC
 `
 
 func (q *Queries) ListStatusPages(ctx context.Context) ([]StatusPage, error) {
@@ -166,6 +174,8 @@ func (q *Queries) ListStatusPages(ctx context.Context) ([]StatusPage, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.FooterMode,
+			&i.HidePoweredBy,
+			&i.ShowHistory,
 		); err != nil {
 			return nil, err
 		}
@@ -227,6 +237,25 @@ func (q *Queries) UpdateStatusPage(ctx context.Context, arg UpdateStatusPagePara
 		arg.CustomFooterHtml,
 		arg.ID,
 	)
+	return err
+}
+
+const updateStatusPageFlags = `-- name: UpdateStatusPageFlags :exec
+UPDATE status_pages
+SET hide_powered_by = ?,
+    show_history    = ?,
+    updated_at      = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+type UpdateStatusPageFlagsParams struct {
+	HidePoweredBy bool  `json:"hide_powered_by"`
+	ShowHistory   bool  `json:"show_history"`
+	ID            int64 `json:"id"`
+}
+
+func (q *Queries) UpdateStatusPageFlags(ctx context.Context, arg UpdateStatusPageFlagsParams) error {
+	_, err := q.db.ExecContext(ctx, updateStatusPageFlags, arg.HidePoweredBy, arg.ShowHistory, arg.ID)
 	return err
 }
 

@@ -63,6 +63,42 @@ func (q *Queries) ListComponentsForStatusPage(ctx context.Context, statusPageID 
 	return items, nil
 }
 
+const listStatusPageComponentSettings = `-- name: ListStatusPageComponentSettings :many
+SELECT component_id, display_order, show_monitors_default
+FROM status_page_components
+WHERE status_page_id = ?
+ORDER BY display_order ASC
+`
+
+type ListStatusPageComponentSettingsRow struct {
+	ComponentID         int64  `json:"component_id"`
+	DisplayOrder        int64  `json:"display_order"`
+	ShowMonitorsDefault string `json:"show_monitors_default"`
+}
+
+func (q *Queries) ListStatusPageComponentSettings(ctx context.Context, statusPageID int64) ([]ListStatusPageComponentSettingsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listStatusPageComponentSettings, statusPageID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListStatusPageComponentSettingsRow{}
+	for rows.Next() {
+		var i ListStatusPageComponentSettingsRow
+		if err := rows.Scan(&i.ComponentID, &i.DisplayOrder, &i.ShowMonitorsDefault); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const removeAllComponentsFromStatusPage = `-- name: RemoveAllComponentsFromStatusPage :exec
 DELETE FROM status_page_components WHERE status_page_id = ?
 `
@@ -100,5 +136,22 @@ type UpdateStatusPageComponentOrderParams struct {
 
 func (q *Queries) UpdateStatusPageComponentOrder(ctx context.Context, arg UpdateStatusPageComponentOrderParams) error {
 	_, err := q.db.ExecContext(ctx, updateStatusPageComponentOrder, arg.DisplayOrder, arg.StatusPageID, arg.ComponentID)
+	return err
+}
+
+const updateStatusPageComponentShowMonitors = `-- name: UpdateStatusPageComponentShowMonitors :exec
+UPDATE status_page_components
+SET show_monitors_default = ?
+WHERE status_page_id = ? AND component_id = ?
+`
+
+type UpdateStatusPageComponentShowMonitorsParams struct {
+	ShowMonitorsDefault string `json:"show_monitors_default"`
+	StatusPageID        int64  `json:"status_page_id"`
+	ComponentID         int64  `json:"component_id"`
+}
+
+func (q *Queries) UpdateStatusPageComponentShowMonitors(ctx context.Context, arg UpdateStatusPageComponentShowMonitorsParams) error {
+	_, err := q.db.ExecContext(ctx, updateStatusPageComponentShowMonitors, arg.ShowMonitorsDefault, arg.StatusPageID, arg.ComponentID)
 	return err
 }

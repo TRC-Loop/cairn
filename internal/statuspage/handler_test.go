@@ -30,7 +30,7 @@ func newTestHandler(t *testing.T) (*Handler, *Service, *store.Queries) {
 	componentSvc := component.NewService(db, q, logger)
 	maintenanceSvc := maintenance.NewService(db, q, logger)
 	incidentSvc := incident.NewService(db, q, logger, maintenanceSvc)
-	h := NewHandler(svc, componentSvc, maintenanceSvc, incidentSvc, q, logger, testEncryptionKey)
+	h := NewHandler(svc, componentSvc, maintenanceSvc, incidentSvc, q, logger, testEncryptionKey, nil, false)
 	return h, svc, q
 }
 

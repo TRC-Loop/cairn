@@ -19,3 +19,14 @@ WHERE status_page_id = ? AND component_id = ?;
 
 -- name: RemoveAllComponentsFromStatusPage :exec
 DELETE FROM status_page_components WHERE status_page_id = ?;
+
+-- name: UpdateStatusPageComponentShowMonitors :exec
+UPDATE status_page_components
+SET show_monitors_default = ?
+WHERE status_page_id = ? AND component_id = ?;
+
+-- name: ListStatusPageComponentSettings :many
+SELECT component_id, display_order, show_monitors_default
+FROM status_page_components
+WHERE status_page_id = ?
+ORDER BY display_order ASC;

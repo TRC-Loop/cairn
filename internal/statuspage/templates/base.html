@@ -27,11 +27,13 @@
   </main>
   <footer class="foot">
     <div class="foot-inner">
+      {{- if not .HidePoweredBy }}
       <div class="foot-meta">
         <span class="foot-brand">Cairn</span>
         <span class="foot-sep">·</span>
         <span class="foot-hint">self-hosted status</span>
       </div>
+      {{- end }}
       {{- if .FooterHTML }}
       <div class="foot-custom">{{ .FooterHTML }}</div>
       {{- end }}

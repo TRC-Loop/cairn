@@ -13,8 +13,16 @@ export type StatusPage = {
 	footer_mode: FooterMode;
 	password_set: boolean;
 	is_default: boolean;
+	hide_powered_by: boolean;
+	show_history: boolean;
 	created_at: string;
 	updated_at: string;
+};
+
+export type StatusPageDomain = {
+	id: number;
+	domain: string;
+	created_at: string;
 };
 
 export type FooterMode = 'structured' | 'html' | 'both';
@@ -50,6 +58,8 @@ export type StatusPageWriteInput = {
 	accent_color?: string;
 	custom_footer_html?: string;
 	is_default?: boolean;
+	hide_powered_by?: boolean;
+	show_history?: boolean;
 };
 
 export async function listStatusPages(): Promise<StatusPage[]> {
@@ -126,4 +136,26 @@ export async function setStatusPageFooterMode(id: number, mode: FooterMode): Pro
 		method: 'PUT',
 		body: { footer_mode: mode }
 	});
+}
+
+export async function listStatusPageDomains(id: number): Promise<StatusPageDomain[]> {
+	const { domains } = await apiRequest<{ domains: StatusPageDomain[] }>(
+		`/api/status-pages/${id}/domains`
+	);
+	return domains;
+}
+
+export async function addStatusPageDomain(
+	id: number,
+	domain: string
+): Promise<StatusPageDomain> {
+	const { domain: row } = await apiRequest<{ domain: StatusPageDomain }>(
+		`/api/status-pages/${id}/domains`,
+		{ method: 'POST', body: { domain } }
+	);
+	return row;
+}
+
+export async function deleteStatusPageDomain(id: number, domainId: number): Promise<void> {
+	await apiRequest(`/api/status-pages/${id}/domains/${domainId}`, { method: 'DELETE' });
 }

@@ -14,6 +14,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -44,8 +45,10 @@ type Handler struct {
 	logger      *slog.Logger
 	templates   *template.Template
 
-	signingKey []byte
-	limiter    *unlockLimiter
+	signingKey  []byte
+	limiter     *unlockLimiter
+	domainCache *DomainCache
+	trustProxy  bool
 }
 
 // NewHandler builds the public status-page HTTP handler. encryptionKey is
@@ -60,8 +63,13 @@ func NewHandler(
 	q *store.Queries,
 	logger *slog.Logger,
 	encryptionKey string,
+	domainCache *DomainCache,
+	trustProxy bool,
 ) *Handler {
 	h := sha256.Sum256([]byte(encryptionKey + "|" + unlockKeyLabel))
+	if domainCache == nil {
+		domainCache = NewDomainCache()
+	}
 	return &Handler{
 		service:     service,
 		component:   componentSvc,
@@ -72,7 +80,30 @@ func NewHandler(
 		templates:   mustLoadTemplates(),
 		signingKey:  h[:],
 		limiter:     newUnlockLimiter(),
+		domainCache: domainCache,
+		trustProxy:  trustProxy,
 	}
+}
+
+func (h *Handler) requestHost(r *http.Request) string {
+	host := ""
+	if h.trustProxy {
+		if forwarded := r.Header.Get("X-Forwarded-Host"); forwarded != "" {
+			if i := strings.Index(forwarded, ","); i != -1 {
+				forwarded = forwarded[:i]
+			}
+			host = strings.TrimSpace(forwarded)
+		}
+	}
+	if host == "" {
+		host = r.Host
+	}
+	if i := strings.LastIndex(host, ":"); i != -1 {
+		if _, err := strconv.Atoi(host[i+1:]); err == nil {
+			host = host[:i]
+		}
+	}
+	return strings.ToLower(host)
 }
 
 // --- Page-view model (shared by HTML and JSON renderers) ---
@@ -93,7 +124,8 @@ type pageView struct {
 	ActiveMaintenance []maintenanceView
 	RecentIncidents  []store.Incident
 	// only set on the unlock page
-	UnlockError string
+	UnlockError    string
+	HidePoweredBy  bool
 }
 
 type componentView struct {
@@ -135,6 +167,17 @@ type maintenanceView struct {
 // --- Handlers ---
 
 func (h *Handler) ServeDefault(w http.ResponseWriter, r *http.Request) {
+	host := h.requestHost(r)
+	if host != "" {
+		if pageID, ok := h.domainCache.Get(host); ok {
+			page, err := h.service.Get(r.Context(), pageID)
+			if err == nil {
+				h.servePage(w, r, page)
+				return
+			}
+			h.logger.Warn("domain-resolved page lookup failed", "domain", host, "page_id", pageID, "err", err)
+		}
+	}
 	page, err := h.service.GetDefault(r.Context())
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -397,6 +440,7 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 		ActiveIncidents:   activeIncidents,
 		ActiveMaintenance: activeMaintenance,
 		RecentIncidents:   recent,
+		HidePoweredBy:     page.HidePoweredBy,
 	}, nil
 }
 

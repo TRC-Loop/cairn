@@ -199,12 +199,22 @@ type StatusPage struct {
 	CreatedAt        time.Time      `json:"created_at"`
 	UpdatedAt        time.Time      `json:"updated_at"`
 	FooterMode       string         `json:"footer_mode"`
+	HidePoweredBy    bool           `json:"hide_powered_by"`
+	ShowHistory      bool           `json:"show_history"`
 }
 
 type StatusPageComponent struct {
-	StatusPageID int64 `json:"status_page_id"`
-	ComponentID  int64 `json:"component_id"`
-	DisplayOrder int64 `json:"display_order"`
+	StatusPageID        int64  `json:"status_page_id"`
+	ComponentID         int64  `json:"component_id"`
+	DisplayOrder        int64  `json:"display_order"`
+	ShowMonitorsDefault string `json:"show_monitors_default"`
+}
+
+type StatusPageDomain struct {
+	ID           int64     `json:"id"`
+	StatusPageID int64     `json:"status_page_id"`
+	Domain       string    `json:"domain"`
+	CreatedAt    time.Time `json:"created_at"`
 }
 
 type StatusPageFooterElement struct {
@@ -216,6 +226,12 @@ type StatusPageFooterElement struct {
 	OpenInNewTab bool           `json:"open_in_new_tab"`
 	DisplayOrder int64          `json:"display_order"`
 	CreatedAt    time.Time      `json:"created_at"`
+}
+
+type StatusPageMonitor struct {
+	StatusPageID int64 `json:"status_page_id"`
+	CheckID      int64 `json:"check_id"`
+	DisplayOrder int64 `json:"display_order"`
 }
 
 type SystemSetting struct {

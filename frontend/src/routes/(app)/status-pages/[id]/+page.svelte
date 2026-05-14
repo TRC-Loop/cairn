@@ -21,6 +21,7 @@
 	import PageHeader from '$lib/components/common/PageHeader.svelte';
 	import StatusPageDialog from '$lib/components/status-pages/StatusPageDialog.svelte';
 	import FooterEditor from '$lib/components/status-pages/FooterEditor.svelte';
+	import StatusPageDomainsSection from '$lib/components/status-pages/StatusPageDomainsSection.svelte';
 	import {
 		getStatusPage,
 		deleteStatusPage,
@@ -323,6 +324,10 @@
 
 		<div class="mt-6">
 			<FooterEditor statusPageId={sp.id} />
+		</div>
+
+		<div class="mt-6">
+			<StatusPageDomainsSection statusPageId={sp.id} />
 		</div>
 
 		<StatusPageDialog

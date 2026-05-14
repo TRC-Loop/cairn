@@ -36,6 +36,8 @@
 	let logoUrl = $state('');
 	let accentColor = $state('');
 	let isDefault = $state(false);
+	let hidePoweredBy = $state(false);
+	let showHistory = $state(false);
 	let saving = $state(false);
 	let fieldErrors = $state<Record<string, string>>({});
 
@@ -48,6 +50,8 @@
 				logoUrl = existing.logo_url;
 				accentColor = existing.accent_color;
 				isDefault = existing.is_default;
+				hidePoweredBy = existing.hide_powered_by;
+				showHistory = existing.show_history;
 			} else {
 				slug = '';
 				title = '';
@@ -55,6 +59,8 @@
 				logoUrl = '';
 				accentColor = '';
 				isDefault = false;
+				hidePoweredBy = false;
+				showHistory = false;
 			}
 			fieldErrors = {};
 		}
@@ -81,7 +87,9 @@
 					title: title.trim(),
 					description: description.trim(),
 					logo_url: logoUrl.trim(),
-					accent_color: accentColor.trim()
+					accent_color: accentColor.trim(),
+					hide_powered_by: hidePoweredBy,
+					show_history: showHistory
 				});
 				toastSuccess($_('status_pages.edit.success'));
 			} else {
@@ -162,6 +170,25 @@
 						{$_('status_pages.fields.is_default_replace')}
 					</p>
 				{/if}
+			{/if}
+
+			{#if mode === 'edit'}
+				<div class="space-y-2 border-t pt-3">
+					<label class="flex items-start gap-2 text-sm">
+						<input type="checkbox" bind:checked={hidePoweredBy} class="mt-0.5 rounded border-input" />
+						<span class="space-y-0.5">
+							<span class="block">{$_('status_pages.fields.hide_powered_by')}</span>
+							<span class="block text-xs text-muted-foreground">{$_('status_pages.fields.hide_powered_by_help')}</span>
+						</span>
+					</label>
+					<label class="flex items-start gap-2 text-sm">
+						<input type="checkbox" bind:checked={showHistory} class="mt-0.5 rounded border-input" />
+						<span class="space-y-0.5">
+							<span class="block">{$_('status_pages.fields.show_history')}</span>
+							<span class="block text-xs text-muted-foreground">{$_('status_pages.fields.show_history_help')}</span>
+						</span>
+					</label>
+				</div>
 			{/if}
 		</div>
 

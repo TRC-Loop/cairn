@@ -140,7 +140,11 @@ func main() {
 	incidentSvc.SetNotifier(notifier.NewIncidentAdapter(dispatcher))
 	maintenanceSvc.SetNotifier(notifier.NewMaintenanceAdapter(dispatcher))
 
-	statusPageHandler := statuspage.NewHandler(statusPageSvc, componentSvc, maintenanceSvc, incidentSvc, q, logger, cfg.EncryptionKey)
+	domainCache := statuspage.NewDomainCache()
+	if err := domainCache.Reload(context.Background(), q); err != nil {
+		logger.Warn("status page domain cache initial load failed", "err", err)
+	}
+	statusPageHandler := statuspage.NewHandler(statusPageSvc, componentSvc, maintenanceSvc, incidentSvc, q, logger, cfg.EncryptionKey, domainCache, cfg.BehindTLS)
 
 	sched := check.NewScheduler(db, q, reg, logger, incidentSvc)
 	wg.Add(1)
@@ -202,6 +206,7 @@ func main() {
 	checksHandler.SetRunner(reg, incidentSvc)
 	componentsHandler := api.NewComponentsHandler(q, componentSvc, logger)
 	statusPagesHandler := api.NewStatusPagesHandler(q, statusPageSvc, logger)
+	statusPageDomainsHandler := api.NewStatusPageDomainsHandler(q, statusPageSvc, domainCache, logger)
 	notificationsHandler := api.NewNotificationsHandler(q, db, secretBox, dispatcher, logger)
 	incidentsHandler := api.NewIncidentsHandler(q, incidentSvc, logger)
 	maintenanceHandler := api.NewMaintenanceHandler(q, maintenanceSvc, logger)
@@ -215,7 +220,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:              cfg.ListenAddr,
-		Handler:           api.NewRouter(logger, db, q, incidentSvc, statusPageHandler, sessionSvc, authHandler, setupHandler, checksHandler, componentsHandler, statusPagesHandler, notificationsHandler, incidentsHandler, maintenanceHandler, usersHandler, systemSettingsHandler, retentionSettingsHandler, backupHandler, twofaHandler, cfg.BehindTLS, cairnVersion, cairnRevision),
+		Handler:           api.NewRouter(logger, db, q, incidentSvc, statusPageHandler, sessionSvc, authHandler, setupHandler, checksHandler, componentsHandler, statusPagesHandler, statusPageDomainsHandler, notificationsHandler, incidentsHandler, maintenanceHandler, usersHandler, systemSettingsHandler, retentionSettingsHandler, backupHandler, twofaHandler, cfg.BehindTLS, cairnVersion, cairnRevision),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 

@@ -40,6 +40,13 @@ SET footer_mode = ?,
     updated_at  = CURRENT_TIMESTAMP
 WHERE id = ?;
 
+-- name: UpdateStatusPageFlags :exec
+UPDATE status_pages
+SET hide_powered_by = ?,
+    show_history    = ?,
+    updated_at      = CURRENT_TIMESTAMP
+WHERE id = ?;
+
 -- name: SetStatusPageAsDefault :exec
 UPDATE status_pages SET is_default = 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?;
 

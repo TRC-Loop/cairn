@@ -35,6 +35,7 @@ func NewRouter(
 	checksHandler *ChecksHandler,
 	componentsHandler *ComponentsHandler,
 	statusPagesHandler *StatusPagesHandler,
+	statusPageDomainsHandler *StatusPageDomainsHandler,
 	notificationsHandler *NotificationsHandler,
 	incidentsHandler *IncidentsHandler,
 	maintenanceHandler *MaintenanceHandler,
@@ -215,6 +216,11 @@ func NewRouter(
 						r.Put("/status-pages/{id}/components", statusPagesHandler.SetComponents)
 						r.Put("/status-pages/{id}/footer/elements", statusPagesHandler.ReplaceFooterElements)
 						r.Put("/status-pages/{id}/footer/mode", statusPagesHandler.SetFooterMode)
+						if statusPageDomainsHandler != nil {
+							r.Get("/status-pages/{id}/domains", statusPageDomainsHandler.List)
+							r.Post("/status-pages/{id}/domains", statusPageDomainsHandler.Add)
+							r.Delete("/status-pages/{id}/domains/{domain_id}", statusPageDomainsHandler.Delete)
+						}
 					})
 				}
 			})

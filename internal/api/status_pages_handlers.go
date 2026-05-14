@@ -38,6 +38,8 @@ type statusPageResponse struct {
 	FooterMode       string    `json:"footer_mode"`
 	PasswordSet      bool      `json:"password_set"`
 	IsDefault        bool      `json:"is_default"`
+	HidePoweredBy    bool      `json:"hide_powered_by"`
+	ShowHistory      bool      `json:"show_history"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 }
@@ -54,6 +56,8 @@ func toStatusPageResponse(p store.StatusPage) statusPageResponse {
 		FooterMode:       p.FooterMode,
 		PasswordSet:      p.PasswordHash.Valid && p.PasswordHash.String != "",
 		IsDefault:        p.IsDefault,
+		HidePoweredBy:    p.HidePoweredBy,
+		ShowHistory:      p.ShowHistory,
 		CreatedAt:        p.CreatedAt,
 		UpdatedAt:        p.UpdatedAt,
 	}
@@ -74,6 +78,8 @@ type statusPageWriteRequest struct {
 	AccentColor      *string `json:"accent_color"`
 	CustomFooterHTML *string `json:"custom_footer_html"`
 	IsDefault        *bool   `json:"is_default"`
+	HidePoweredBy    *bool   `json:"hide_powered_by"`
+	ShowHistory      *bool   `json:"show_history"`
 }
 
 func (h *StatusPagesHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -242,6 +248,21 @@ func (h *StatusPagesHandler) Update(w http.ResponseWriter, r *http.Request) {
 		h.logger.Error("update status page failed", "id", id, "err", err)
 		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
 		return
+	}
+	if req.HidePoweredBy != nil || req.ShowHistory != nil {
+		hide := existing.HidePoweredBy
+		show := existing.ShowHistory
+		if req.HidePoweredBy != nil {
+			hide = *req.HidePoweredBy
+		}
+		if req.ShowHistory != nil {
+			show = *req.ShowHistory
+		}
+		if err := h.svc.UpdateFlags(r.Context(), id, hide, show); err != nil {
+			h.logger.Error("update status page flags failed", "id", id, "err", err)
+			writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+			return
+		}
 	}
 	updated, _ := h.q.GetStatusPage(r.Context(), id)
 	h.logger.Info("status page updated", "id", id)

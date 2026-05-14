@@ -12,10 +12,13 @@ import (
 
 type Querier interface {
 	AddComponentToStatusPage(ctx context.Context, arg AddComponentToStatusPageParams) error
+	AddMonitorToStatusPage(ctx context.Context, arg AddMonitorToStatusPageParams) error
+	AddStatusPageDomain(ctx context.Context, arg AddStatusPageDomainParams) (StatusPageDomain, error)
 	AutoCompleteDueMaintenance(ctx context.Context) error
 	AutoStartDueMaintenance(ctx context.Context) error
 	CancelMaintenance(ctx context.Context, id int64) (int64, error)
 	ClearChannelsForCheck(ctx context.Context, checkID int64) error
+	CountAllStatusPageDomains(ctx context.Context) (int64, error)
 	CountChecksByStatus(ctx context.Context) ([]CountChecksByStatusRow, error)
 	CountChecksForChannel(ctx context.Context, channelID int64) (int64, error)
 	CountChecksForComponent(ctx context.Context, componentID sql.NullInt64) (int64, error)
@@ -54,6 +57,7 @@ type Querier interface {
 	DeleteSessionsForUser(ctx context.Context, userID int64) error
 	DeleteSessionsForUserExcept(ctx context.Context, arg DeleteSessionsForUserExceptParams) error
 	DeleteStatusPage(ctx context.Context, id int64) error
+	DeleteStatusPageDomain(ctx context.Context, arg DeleteStatusPageDomainParams) error
 	DeleteUser(ctx context.Context, id int64) error
 	DisableUserTOTP(ctx context.Context, id int64) error
 	EnableUserTOTP(ctx context.Context, id int64) error
@@ -82,6 +86,7 @@ type Querier interface {
 	GetSessionWithUser(ctx context.Context, id string) (GetSessionWithUserRow, error)
 	GetStatusPage(ctx context.Context, id int64) (StatusPage, error)
 	GetStatusPageBySlug(ctx context.Context, slug string) (StatusPage, error)
+	GetStatusPageDomain(ctx context.Context, id int64) (StatusPageDomain, error)
 	GetSystemSettings(ctx context.Context) (SystemSetting, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id int64) (User, error)
@@ -94,6 +99,7 @@ type Querier interface {
 	ListActiveMaintenance(ctx context.Context) ([]MaintenanceWindow, error)
 	ListAffectedCheckIDsForIncident(ctx context.Context, incidentID int64) ([]int64, error)
 	ListAffectedComponents(ctx context.Context, maintenanceID int64) ([]Component, error)
+	ListAllStatusPageDomains(ctx context.Context) ([]StatusPageDomain, error)
 	ListChannelRowsForCheck(ctx context.Context, checkID int64) ([]NotificationChannel, error)
 	ListChannelsForCheck(ctx context.Context, checkID int64) ([]int64, error)
 	ListChecks(ctx context.Context) ([]Check, error)
@@ -105,6 +111,7 @@ type Querier interface {
 	ListComponents(ctx context.Context) ([]Component, error)
 	ListComponentsForMaintenance(ctx context.Context, maintenanceID int64) ([]int64, error)
 	ListComponentsForStatusPage(ctx context.Context, statusPageID int64) ([]Component, error)
+	ListDomainsForStatusPage(ctx context.Context, statusPageID int64) ([]StatusPageDomain, error)
 	ListEnabledChecksDue(ctx context.Context) ([]Check, error)
 	ListEnabledNotificationChannels(ctx context.Context) ([]NotificationChannel, error)
 	ListEnabledPushChecks(ctx context.Context) ([]Check, error)
@@ -116,23 +123,27 @@ type Querier interface {
 	ListMaintenanceFiltered(ctx context.Context, arg ListMaintenanceFilteredParams) ([]MaintenanceWindow, error)
 	ListMaintenanceForComponent(ctx context.Context, componentID int64) ([]MaintenanceWindow, error)
 	ListMaintenanceWindows(ctx context.Context, limit int64) ([]MaintenanceWindow, error)
+	ListMonitorsForStatusPage(ctx context.Context, statusPageID int64) ([]Check, error)
 	ListNotificationChannels(ctx context.Context) ([]NotificationChannel, error)
 	ListPastMaintenance(ctx context.Context, arg ListPastMaintenanceParams) ([]MaintenanceWindow, error)
 	ListPendingDeliveries(ctx context.Context, arg ListPendingDeliveriesParams) ([]NotificationDelivery, error)
 	ListRecentDeliveriesForChannel(ctx context.Context, arg ListRecentDeliveriesForChannelParams) ([]NotificationDelivery, error)
 	ListRecentResolvedIncidents(ctx context.Context, limit int64) ([]Incident, error)
 	ListSessionsForUser(ctx context.Context, userID int64) ([]Session, error)
+	ListStatusPageComponentSettings(ctx context.Context, statusPageID int64) ([]ListStatusPageComponentSettingsRow, error)
 	ListStatusPages(ctx context.Context) ([]StatusPage, error)
 	ListUnusedRecoveryCodesForUser(ctx context.Context, userID int64) ([]RecoveryCode, error)
 	ListUpcomingMaintenance(ctx context.Context) ([]MaintenanceWindow, error)
 	ListUpdatesForIncident(ctx context.Context, incidentID int64) ([]IncidentUpdate, error)
 	ListUsers(ctx context.Context) ([]User, error)
+	LookupStatusPageByDomain(ctx context.Context, domain string) (StatusPage, error)
 	MarkDeliveryFailed(ctx context.Context, arg MarkDeliveryFailedParams) error
 	MarkDeliveryRetry(ctx context.Context, arg MarkDeliveryRetryParams) error
 	MarkDeliverySending(ctx context.Context, arg MarkDeliverySendingParams) error
 	MarkDeliverySent(ctx context.Context, arg MarkDeliverySentParams) error
 	MarkRecoveryCodeUsed(ctx context.Context, id int64) error
 	RemoveAllComponentsFromStatusPage(ctx context.Context, statusPageID int64) error
+	RemoveAllMonitorsFromStatusPage(ctx context.Context, statusPageID int64) error
 	RemoveComponentFromStatusPage(ctx context.Context, arg RemoveComponentFromStatusPageParams) error
 	SetCheckPushToken(ctx context.Context, arg SetCheckPushTokenParams) error
 	SetStatusPageAsDefault(ctx context.Context, id int64) error
@@ -153,6 +164,8 @@ type Querier interface {
 	UpdateRetentionSettings(ctx context.Context, arg UpdateRetentionSettingsParams) error
 	UpdateStatusPage(ctx context.Context, arg UpdateStatusPageParams) error
 	UpdateStatusPageComponentOrder(ctx context.Context, arg UpdateStatusPageComponentOrderParams) error
+	UpdateStatusPageComponentShowMonitors(ctx context.Context, arg UpdateStatusPageComponentShowMonitorsParams) error
+	UpdateStatusPageFlags(ctx context.Context, arg UpdateStatusPageFlagsParams) error
 	UpdateStatusPageFooterMode(ctx context.Context, arg UpdateStatusPageFooterModeParams) error
 	UpdateStatusPagePassword(ctx context.Context, arg UpdateStatusPagePasswordParams) error
 	UpdateSystemSettings(ctx context.Context, arg UpdateSystemSettingsParams) error

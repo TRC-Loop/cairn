@@ -118,6 +118,14 @@ func (s *Service) Delete(ctx context.Context, id int64) error {
 	return s.q.DeleteStatusPage(ctx, id)
 }
 
+func (s *Service) UpdateFlags(ctx context.Context, id int64, hidePoweredBy, showHistory bool) error {
+	return s.q.UpdateStatusPageFlags(ctx, store.UpdateStatusPageFlagsParams{
+		HidePoweredBy: hidePoweredBy,
+		ShowHistory:   showHistory,
+		ID:            id,
+	})
+}
+
 // SetDefault promotes the given page to is_default=1, clearing any previous default.
 func (s *Service) SetDefault(ctx context.Context, id int64) error {
 	tx, err := s.db.BeginTx(ctx, nil)
