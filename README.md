@@ -17,16 +17,6 @@
   <a href="https://status.arne.sh">Showcase</a>
 </p>
 
-## Built with
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Go-1.25-7DD3FC?style=for-the-badge&labelColor=161B22&logo=go&logoColor=7DD3FC" alt="Go">
-  <img src="https://img.shields.io/badge/SvelteKit-5-7DD3FC?style=for-the-badge&labelColor=161B22&logo=svelte&logoColor=7DD3FC" alt="SvelteKit">
-  <img src="https://img.shields.io/badge/SQLite-modernc-7DD3FC?style=for-the-badge&labelColor=161B22&logo=sqlite&logoColor=7DD3FC" alt="SQLite">
-  <img src="https://img.shields.io/badge/Tailwind-4-7DD3FC?style=for-the-badge&labelColor=161B22&logo=tailwindcss&logoColor=7DD3FC" alt="Tailwind">
-  <img src="https://img.shields.io/badge/shadcn--svelte-1-7DD3FC?style=for-the-badge&labelColor=161B22&logo=shadcnui&logoColor=7DD3FC" alt="shadcn-svelte">
-</p>
-
 ## Features
 
 - HTTP, TCP, and push-based monitors
@@ -51,6 +41,16 @@ docker run -d \
 Then open http://localhost:8080 and finish setup.
 
 A `docker-compose.yml` is included for a more complete setup.
+
+## Built with
+
+<p align="center">
+  <img src="https://img.shields.io/static/v1?label=&message=Go&color=7DD3FC&style=for-the-badge&labelColor=161B22&logo=go&logoColor=7DD3FC" alt="Go">
+  <img src="https://img.shields.io/static/v1?label=&message=SvelteKit&color=7DD3FC&style=for-the-badge&labelColor=161B22&logo=svelte&logoColor=7DD3FC" alt="SvelteKit">
+  <img src="https://img.shields.io/static/v1?label=&message=SQLite&color=7DD3FC&style=for-the-badge&labelColor=161B22&logo=sqlite&logoColor=7DD3FC" alt="SQLite">
+  <img src="https://img.shields.io/static/v1?label=&message=Tailwind&color=7DD3FC&style=for-the-badge&labelColor=161B22&logo=tailwindcss&logoColor=7DD3FC" alt="Tailwind">
+  <img src="https://img.shields.io/static/v1?label=&message=shadcn-svelte&color=7DD3FC&style=for-the-badge&labelColor=161B22&logo=shadcnui&logoColor=7DD3FC" alt="shadcn-svelte">
+</p>
 
 ## Links
 
