@@ -69,10 +69,16 @@ export async function listStatusPages(): Promise<StatusPage[]> {
 
 export async function getStatusPage(
 	id: number
-): Promise<{ status_page: StatusPage; components: Component[] }> {
-	return apiRequest<{ status_page: StatusPage; components: Component[] }>(
-		`/api/status-pages/${id}`
-	);
+): Promise<{
+	status_page: StatusPage;
+	components: Component[];
+	component_settings?: Array<{
+		component_id: number;
+		display_order: number;
+		show_monitors_default: ShowMonitorsMode;
+	}>;
+}> {
+	return apiRequest(`/api/status-pages/${id}`);
 }
 
 export async function createStatusPage(input: StatusPageWriteInput): Promise<StatusPage> {
@@ -109,11 +115,21 @@ export async function setStatusPagePassword(id: number, password: string): Promi
 	});
 }
 
-export async function setStatusPageComponents(id: number, componentIds: number[]): Promise<void> {
-	await apiRequest(`/api/status-pages/${id}/components`, {
-		method: 'PUT',
-		body: { component_ids: componentIds }
-	});
+export type ShowMonitorsMode = 'off' | 'default_open' | 'default_closed';
+
+export type ComponentSetting = {
+	component_id: number;
+	show_monitors_default: ShowMonitorsMode;
+};
+
+export async function setStatusPageComponents(
+	id: number,
+	componentIds: number[],
+	settings?: ComponentSetting[]
+): Promise<void> {
+	const body: Record<string, unknown> = { component_ids: componentIds };
+	if (settings && settings.length > 0) body.component_settings = settings;
+	await apiRequest(`/api/status-pages/${id}/components`, { method: 'PUT', body });
 }
 
 export async function getStatusPageFooter(id: number): Promise<FooterPayload> {

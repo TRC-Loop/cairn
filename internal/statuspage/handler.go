@@ -136,13 +136,15 @@ type directMonitorView struct {
 }
 
 type componentView struct {
-	ID               int64       `json:"id"`
-	Name             string      `json:"name"`
-	Description      string      `json:"description,omitempty"`
-	Status           string      `json:"status"`
-	UnderMaintenance bool        `json:"under_maintenance"`
-	History          []DayStatus `json:"history_90d"`
-	UptimePercent    string      `json:"-"`
+	ID               int64               `json:"id"`
+	Name             string              `json:"name"`
+	Description      string              `json:"description,omitempty"`
+	Status           string              `json:"status"`
+	UnderMaintenance bool                `json:"under_maintenance"`
+	History          []DayStatus         `json:"history_90d"`
+	UptimePercent    string              `json:"-"`
+	ShowMonitors     string              `json:"show_monitors,omitempty"`
+	Monitors         []directMonitorView `json:"monitors,omitempty"`
 }
 
 type incidentView struct {
@@ -379,6 +381,12 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 		return nil, fmt.Errorf("list components: %w", err)
 	}
 
+	settings, _ := h.service.ListComponentSettings(ctx, page.ID)
+	showMonitorsByID := make(map[int64]string, len(settings))
+	for _, s := range settings {
+		showMonitorsByID[s.ComponentID] = s.ShowMonitorsDefault
+	}
+
 	componentViews := make([]componentView, 0, len(components))
 	componentIDSet := make(map[int64]bool, len(components))
 	for _, c := range components {
@@ -400,6 +408,23 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 		if under {
 			displayStatus = "maintenance"
 		}
+		showMode := showMonitorsByID[c.ID]
+		if showMode == "" {
+			showMode = "off"
+		}
+		var monitors []directMonitorView
+		if showMode != "off" {
+			checks, err := h.q.ListChecksForComponent(ctx, sql.NullInt64{Int64: c.ID, Valid: true})
+			if err == nil {
+				for _, ck := range checks {
+					st := ck.LastStatus
+					if st == "" {
+						st = "unknown"
+					}
+					monitors = append(monitors, directMonitorView{ID: ck.ID, Name: ck.Name, Status: st})
+				}
+			}
+		}
 		componentViews = append(componentViews, componentView{
 			ID:               c.ID,
 			Name:             c.Name,
@@ -408,6 +433,8 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 			UnderMaintenance: under,
 			History:          history,
 			UptimePercent:    UptimePercent(history),
+			ShowMonitors:     showMode,
+			Monitors:         monitors,
 		})
 	}
 

@@ -180,6 +180,31 @@ func (s *Service) AddComponent(ctx context.Context, statusPageID, componentID, d
 	})
 }
 
+const (
+	ShowMonitorsOff            = "off"
+	ShowMonitorsDefaultOpen    = "default_open"
+	ShowMonitorsDefaultClosed  = "default_closed"
+)
+
+func ValidShowMonitorsMode(m string) bool {
+	return m == ShowMonitorsOff || m == ShowMonitorsDefaultOpen || m == ShowMonitorsDefaultClosed
+}
+
+func (s *Service) SetComponentShowMonitors(ctx context.Context, statusPageID, componentID int64, mode string) error {
+	if !ValidShowMonitorsMode(mode) {
+		return errors.New("invalid show_monitors mode")
+	}
+	return s.q.UpdateStatusPageComponentShowMonitors(ctx, store.UpdateStatusPageComponentShowMonitorsParams{
+		ShowMonitorsDefault: mode,
+		StatusPageID:        statusPageID,
+		ComponentID:         componentID,
+	})
+}
+
+func (s *Service) ListComponentSettings(ctx context.Context, statusPageID int64) ([]store.ListStatusPageComponentSettingsRow, error) {
+	return s.q.ListStatusPageComponentSettings(ctx, statusPageID)
+}
+
 func (s *Service) RemoveComponent(ctx context.Context, statusPageID, componentID int64) error {
 	return s.q.RemoveComponentFromStatusPage(ctx, store.RemoveComponentFromStatusPageParams{
 		StatusPageID: statusPageID,

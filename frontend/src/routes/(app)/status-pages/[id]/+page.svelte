@@ -29,14 +29,17 @@
 		setDefaultStatusPage,
 		setStatusPagePassword,
 		setStatusPageComponents,
-		type StatusPage
+		type StatusPage,
+		type ShowMonitorsMode
 	} from '$lib/api/statusPages';
+	import * as Select from '$lib/components/ui/select';
 	import { listComponents, type Component } from '$lib/api/components';
 	import { ApiError } from '$lib/api/client';
 	import { toastError, toastSuccess } from '$lib/toast';
 
 	let statusPage = $state<StatusPage | null>(null);
 	let linked = $state<Component[]>([]);
+	let showMonitorsMap = $state<Record<number, ShowMonitorsMode>>({});
 	let loading = $state(true);
 	let notFound = $state(false);
 
@@ -62,6 +65,11 @@
 			const res = await getStatusPage(id);
 			statusPage = res.status_page;
 			linked = res.components;
+			const map: Record<number, ShowMonitorsMode> = {};
+			for (const s of res.component_settings ?? []) {
+				map[s.component_id] = s.show_monitors_default;
+			}
+			showMonitorsMap = map;
 		} catch (err) {
 			if (err instanceof ApiError && err.status === 404) {
 				notFound = true;
@@ -170,12 +178,27 @@
 		try {
 			await setStatusPageComponents(
 				statusPage.id,
-				newLinked.map((c) => c.id)
+				newLinked.map((c) => c.id),
+				newLinked.map((c) => ({
+					component_id: c.id,
+					show_monitors_default: showMonitorsMap[c.id] ?? 'off'
+				}))
 			);
 		} catch (err) {
 			toastError(err, $_('common.error_generic'));
 			await load();
 		}
+	}
+
+	async function changeShowMonitors(cid: number, mode: ShowMonitorsMode) {
+		showMonitorsMap = { ...showMonitorsMap, [cid]: mode };
+		await persistOrder(linked);
+	}
+
+	function showMonitorsLabel(mode: ShowMonitorsMode): string {
+		if (mode === 'default_open') return $_('status_pages.component_settings.default_open');
+		if (mode === 'default_closed') return $_('status_pages.component_settings.default_closed');
+		return $_('status_pages.component_settings.off');
 	}
 
 	async function moveUp(idx: number) {
@@ -285,11 +308,31 @@
 			{:else}
 				<ul class="divide-y divide-border">
 					{#each linked as c, idx (c.id)}
-						<li class="flex items-center justify-between py-2 text-sm">
-							<a href={`/components/${c.id}`} class="text-foreground hover:underline">
+						<li class="flex items-center justify-between gap-2 py-2 text-sm">
+							<a href={`/components/${c.id}`} class="truncate text-foreground hover:underline">
 								{c.name}
 							</a>
-							<div class="flex items-center gap-1">
+							<div class="flex shrink-0 items-center gap-1">
+								<Select.Root
+									type="single"
+									value={showMonitorsMap[c.id] ?? 'off'}
+									onValueChange={(v) => changeShowMonitors(c.id, (v as ShowMonitorsMode) ?? 'off')}
+								>
+									<Select.Trigger class="h-7 min-w-[140px] text-xs">
+										{showMonitorsLabel(showMonitorsMap[c.id] ?? 'off')}
+									</Select.Trigger>
+									<Select.Content>
+										<Select.Item value="off">
+											{$_('status_pages.component_settings.off')}
+										</Select.Item>
+										<Select.Item value="default_closed">
+											{$_('status_pages.component_settings.default_closed')}
+										</Select.Item>
+										<Select.Item value="default_open">
+											{$_('status_pages.component_settings.default_open')}
+										</Select.Item>
+									</Select.Content>
+								</Select.Root>
 								<button
 									type="button"
 									aria-label={$_('status_pages.detail.move_up')}

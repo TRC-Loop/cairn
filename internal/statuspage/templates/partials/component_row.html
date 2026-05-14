@@ -25,5 +25,19 @@
       <span>Today</span>
     </div>
   </div>
+  {{- if and .Monitors (ne .ShowMonitors "off") }}
+  <details class="component-monitors"{{ if eq .ShowMonitors "default_open" }} open{{ end }}>
+    <summary>Monitors</summary>
+    <ul class="component-monitor-list">
+      {{- range .Monitors }}
+      <li class="component-monitor-row">
+        <span class="comp-dot {{ statusColor .Status }}" aria-hidden="true"></span>
+        <span class="comp-name">{{ .Name }}</span>
+        <span class="comp-status">{{ statusLabel .Status }}</span>
+      </li>
+      {{- end }}
+    </ul>
+  </details>
+  {{- end }}
 </li>
 {{- end -}}

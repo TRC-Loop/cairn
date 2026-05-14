@@ -122,9 +122,19 @@ func (h *StatusPagesHandler) Get(w http.ResponseWriter, r *http.Request) {
 		count, _ := h.q.CountChecksForComponent(r.Context(), sql.NullInt64{Int64: c.ID, Valid: true})
 		compsOut = append(compsOut, toComponentResponse(c, count))
 	}
+	settings, _ := h.svc.ListComponentSettings(r.Context(), id)
+	settingsOut := make([]map[string]any, 0, len(settings))
+	for _, s := range settings {
+		settingsOut = append(settingsOut, map[string]any{
+			"component_id":          s.ComponentID,
+			"display_order":         s.DisplayOrder,
+			"show_monitors_default": s.ShowMonitorsDefault,
+		})
+	}
 	writeJSON(w, http.StatusOK, map[string]any{
-		"status_page": toStatusPageResponse(p),
-		"components":  compsOut,
+		"status_page":        toStatusPageResponse(p),
+		"components":         compsOut,
+		"component_settings": settingsOut,
 	})
 }
 
@@ -507,8 +517,14 @@ func (h *StatusPagesHandler) SetFooterMode(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusNoContent)
 }
 
+type componentSetting struct {
+	ComponentID         int64  `json:"component_id"`
+	ShowMonitorsDefault string `json:"show_monitors_default"`
+}
+
 type setComponentsRequest struct {
-	ComponentIDs []int64 `json:"component_ids"`
+	ComponentIDs      []int64            `json:"component_ids"`
+	ComponentSettings []componentSetting `json:"component_settings"`
 }
 
 type setMonitorsRequest struct {
@@ -595,13 +611,40 @@ func (h *StatusPagesHandler) SetComponents(w http.ResponseWriter, r *http.Reques
 		writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
 		return
 	}
-	for idx, cid := range req.ComponentIDs {
+	settingsByID := map[int64]string{}
+	for _, s := range req.ComponentSettings {
+		settingsByID[s.ComponentID] = s.ShowMonitorsDefault
+	}
+	ids := req.ComponentIDs
+	if len(ids) == 0 && len(req.ComponentSettings) > 0 {
+		ids = make([]int64, 0, len(req.ComponentSettings))
+		for _, s := range req.ComponentSettings {
+			ids = append(ids, s.ComponentID)
+		}
+	}
+	for idx, cid := range ids {
 		if err := h.svc.AddComponent(r.Context(), id, cid, int64(idx)); err != nil {
 			h.logger.Error("add component to status page failed", "id", id, "component_id", cid, "err", err)
 			writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
 			return
 		}
+		mode := settingsByID[cid]
+		if mode == "" {
+			mode = "off"
+		}
+		if !statuspage.ValidShowMonitorsMode(mode) {
+			writeError(w, http.StatusBadRequest, CodeValidationFailed, "validation failed",
+				map[string]string{"show_monitors_default": FieldInvalidValue})
+			return
+		}
+		if mode != "off" {
+			if err := h.svc.SetComponentShowMonitors(r.Context(), id, cid, mode); err != nil {
+				h.logger.Error("set component show_monitors failed", "id", id, "component_id", cid, "err", err)
+				writeError(w, http.StatusInternalServerError, CodeInternalError, "internal error", nil)
+				return
+			}
+		}
 	}
-	h.logger.Info("status page components updated", "id", id, "count", len(req.ComponentIDs))
+	h.logger.Info("status page components updated", "id", id, "count", len(ids))
 	w.WriteHeader(http.StatusNoContent)
 }

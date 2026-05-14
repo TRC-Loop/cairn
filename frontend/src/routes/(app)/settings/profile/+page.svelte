@@ -102,7 +102,8 @@
 </script>
 
 {#if user}
-	<div class="space-y-10">
+	<div class="grid grid-cols-1 gap-8 lg:grid-cols-[3fr_2fr]">
+		<div class="space-y-10">
 		<section>
 			<h2 class="mb-2 text-base font-medium">{$_('settings.profile.section_info')}</h2>
 			<p class="mb-4 text-sm text-muted-foreground">
@@ -161,8 +162,6 @@
 			</form>
 		</section>
 
-		<TwoFactorSection />
-
 		<section>
 			<h2 class="mb-2 text-base font-medium">{$_('settings.profile.section_prefs')}</h2>
 			<form
@@ -194,5 +193,9 @@
 				</div>
 			</form>
 		</section>
+		</div>
+		<div>
+			<TwoFactorSection />
+		</div>
 	</div>
 {/if}
