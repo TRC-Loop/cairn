@@ -21,6 +21,15 @@
 	let reopenMode = $state<string>('flapping_only');
 	let settings = $state<SystemSettings | null>(null);
 
+	function pad(n: number, w: number) {
+		return String(n).padStart(w, '0');
+	}
+	const now = new Date();
+	const datetimeSample = `${now.getUTCFullYear()}${pad(now.getUTCMonth() + 1, 2)}${pad(now.getUTCDate(), 2)}T${pad(now.getUTCHours(), 2)}${pad(now.getUTCMinutes(), 2)}${pad(now.getUTCSeconds(), 2)}`;
+	const yearSample = String(now.getUTCFullYear());
+	const monthSample = pad(now.getUTCMonth() + 1, 2);
+	const daySample = pad(now.getUTCDate(), 2);
+
 	const preview = $derived(format.replace('{id}', '0042'));
 	const hasIdToken = $derived(format.includes('{id}'));
 
@@ -75,7 +84,28 @@
 			</p>
 			<div class="space-y-4">
 				<div class="space-y-1.5">
-					<Label for="s-fmt">{$_('settings.system.id_format')}</Label>
+					<div class="flex items-center gap-2">
+						<Label for="s-fmt">{$_('settings.system.id_format')}</Label>
+						<details class="text-xs">
+							<summary class="cursor-pointer text-muted-foreground hover:text-foreground" aria-label={$_('settings.system.id_format_placeholders')}>
+								(?)
+							</summary>
+							<div class="mt-2 rounded-md border bg-muted/30 p-3">
+								<p class="mb-2 text-xs text-muted-foreground">
+									{$_('settings.system.id_format_placeholders')}
+								</p>
+								<table class="text-xs">
+									<tbody>
+										<tr><td class="pr-3 font-mono">{'{id}'}</td><td class="font-mono">42</td></tr>
+										<tr><td class="pr-3 font-mono">{'{year}'}</td><td class="font-mono">{yearSample}</td></tr>
+										<tr><td class="pr-3 font-mono">{'{month}'}</td><td class="font-mono">{monthSample}</td></tr>
+										<tr><td class="pr-3 font-mono">{'{day}'}</td><td class="font-mono">{daySample}</td></tr>
+										<tr><td class="pr-3 font-mono">{'{datetime}'}</td><td class="font-mono">{datetimeSample}</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</details>
+					</div>
 					<Input id="s-fmt" bind:value={format} maxlength={64} required />
 					<p class="text-xs text-muted-foreground">
 						{$_('settings.system.id_format_help')}
@@ -130,13 +160,20 @@
 							</Select.Item>
 						</Select.Content>
 					</Select.Root>
-					<p class="text-xs text-muted-foreground">
-						{reopenMode === 'always'
-							? $_('settings.system.reopen_mode_always_help')
-							: reopenMode === 'never'
-								? $_('settings.system.reopen_mode_never_help')
-								: $_('settings.system.reopen_mode_flapping_help')}
-					</p>
+					<div class="space-y-1 rounded-md border bg-muted/30 p-3 text-xs text-muted-foreground">
+						<p>
+							<span class="font-medium text-foreground">{$_('settings.system.reopen_mode_always')}:</span>
+							{$_('settings.system.reopen_mode_always_help')}
+						</p>
+						<p>
+							<span class="font-medium text-foreground">{$_('settings.system.reopen_mode_never')}:</span>
+							{$_('settings.system.reopen_mode_never_help')}
+						</p>
+						<p>
+							<span class="font-medium text-foreground">{$_('settings.system.reopen_mode_flapping')}:</span>
+							{$_('settings.system.reopen_mode_flapping_help')}
+						</p>
+					</div>
 				</div>
 			</div>
 		</section>

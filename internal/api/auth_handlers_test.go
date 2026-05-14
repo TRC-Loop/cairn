@@ -43,7 +43,7 @@ func newAuthTestServer(t *testing.T) (*httptest.Server, *store.Queries) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	sessionSvc := auth.NewSessionService(q, logger)
 	h := NewAuthHandler(q, sessionSvc, logger, false)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, h, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, h, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q
 }

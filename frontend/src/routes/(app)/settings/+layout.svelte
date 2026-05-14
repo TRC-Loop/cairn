@@ -30,7 +30,7 @@
 		<p class="mt-1 text-sm text-muted-foreground">{$_('settings.subtitle')}</p>
 	</header>
 
-	<nav class="mb-6 flex gap-1 border-b border-border" aria-label="Settings tabs">
+	<nav class="sticky top-0 z-10 mb-6 flex gap-1 border-b border-border bg-background" aria-label="Settings tabs">
 		{#each visibleTabs as tab (tab.href)}
 			{@const active = isActive(tab.href, page.url.pathname)}
 			<a

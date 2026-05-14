@@ -27,7 +27,7 @@ func newChecksTestServer(t *testing.T) (*httptest.Server, *store.Queries, *sql.D
 	sessionSvc := auth.NewSessionService(q, logger)
 	authH := NewAuthHandler(q, sessionSvc, logger, false)
 	checksH := NewChecksHandler(q, db, logger)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, checksH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, checksH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q, db
 }

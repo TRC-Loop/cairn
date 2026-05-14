@@ -44,6 +44,7 @@ func NewRouter(
 	retentionSettingsHandler *RetentionSettingsHandler,
 	backupHandler *BackupHandler,
 	twofaHandler *TwoFAHandler,
+	dbStatsHandler *DBStatsHandler,
 	behindTLS bool,
 	version, revision string,
 ) http.Handler {
@@ -184,6 +185,13 @@ func NewRouter(
 						r.Use(auth.RequireRole(auth.RoleAdmin, logger))
 						r.Get("/system-settings", systemSettingsHandler.Get)
 						r.Patch("/system-settings", systemSettingsHandler.Update)
+					})
+				}
+
+				if dbStatsHandler != nil {
+					r.Group(func(r chi.Router) {
+						r.Use(auth.RequireRole(auth.RoleAdmin, logger))
+						r.Get("/system/db-stats", dbStatsHandler.Get)
 					})
 				}
 
