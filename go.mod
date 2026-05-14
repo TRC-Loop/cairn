@@ -4,7 +4,7 @@ go 1.25.7
 
 require (
 	github.com/go-chi/chi/v5 v5.2.5
-	github.com/go-sql-driver/mysql v1.9.3
+	github.com/go-sql-driver/mysql v1.10.0
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/pquerna/otp v1.5.0
