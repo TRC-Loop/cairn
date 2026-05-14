@@ -12,7 +12,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="referrer" content="no-referrer">
   <title>{{ .PageTitle }}</title>
-  <link rel="stylesheet" href="/static/css/status.css">
+  <link rel="stylesheet" href="/static/css/status.css?v={{ .AssetVersion }}">
   <link rel="icon" type="image/x-icon" href="/static/favicons/{{ .OverallStatusFavicon }}.ico">
   {{- if .LogoURL }}
   <link rel="apple-touch-icon" href="{{ .LogoURL }}">
@@ -39,7 +39,7 @@
       {{- end }}
     </div>
   </footer>
-  <script src="/static/js/status.js" defer></script>
+  <script src="/static/js/status.js?v={{ .AssetVersion }}" defer></script>
 </body>
 </html>
 {{- end -}}

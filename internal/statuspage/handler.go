@@ -128,6 +128,7 @@ type pageView struct {
 	HidePoweredBy  bool
 	ShowHistory    bool
 	DirectMonitors []directMonitorView
+	AssetVersion   string
 }
 
 type directMonitorView struct {
@@ -346,6 +347,7 @@ func (h *Handler) renderUnlock(w http.ResponseWriter, r *http.Request, page stor
 		UnlockError: errMsg,
 		OverallStatus: "unknown",
 		OverallStatusFavicon: faviconForStatus("unknown"),
+		AssetVersion: AssetVersion(),
 	}
 	h.writeSecurityHeaders(w)
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -366,6 +368,7 @@ func (h *Handler) renderNotFound(w http.ResponseWriter, r *http.Request) {
 		Lang:          preferredLang(r.Header.Get("Accept-Language")),
 		OverallStatus: "unknown",
 		OverallStatusFavicon: faviconForStatus("unknown"),
+		AssetVersion: AssetVersion(),
 	}
 	h.writeSecurityHeaders(w)
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -487,6 +490,7 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 		HidePoweredBy:     page.HidePoweredBy,
 		ShowHistory:       page.ShowHistory,
 		DirectMonitors:    h.buildDirectMonitors(ctx, page.ID),
+		AssetVersion:      AssetVersion(),
 	}, nil
 }
 

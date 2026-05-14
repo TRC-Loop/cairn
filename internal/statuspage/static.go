@@ -35,10 +35,18 @@ func StaticHandler() http.Handler {
 			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 			w.Header().Set("Content-Type", "font/woff2")
 		case ".css":
-			w.Header().Set("Cache-Control", "public, max-age=3600")
+			if r.URL.Query().Get("v") != "" {
+				w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			} else {
+				w.Header().Set("Cache-Control", "public, max-age=60")
+			}
 			w.Header().Set("Content-Type", "text/css; charset=utf-8")
 		case ".js":
-			w.Header().Set("Cache-Control", "public, max-age=3600")
+			if r.URL.Query().Get("v") != "" {
+				w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+			} else {
+				w.Header().Set("Cache-Control", "public, max-age=60")
+			}
 			w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 		}
 		w.Header().Set("X-Content-Type-Options", "nosniff")

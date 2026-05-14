@@ -209,7 +209,7 @@ func UptimePercent(history []DayStatus) string {
 		}
 	}
 	if counted == 0 {
-		return "—"
+		return "N/A"
 	}
 	return fmt.Sprintf("%.2f%%", float64(up)/float64(counted)*100)
 }

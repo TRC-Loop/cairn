@@ -176,7 +176,7 @@ func sliceFn(items ...any) []any {
 
 func percent(num, denom int) string {
 	if denom == 0 {
-		return "—"
+		return "N/A"
 	}
 	p := float64(num) / float64(denom) * 100
 	return fmt.Sprintf("%.2f%%", math.Floor(p*100)/100)

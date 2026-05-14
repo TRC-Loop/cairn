@@ -158,6 +158,28 @@ func TestMonitorDialogIdMatchesComponentTrigger(t *testing.T) {
 	}
 }
 
+func TestStaticAssetsCacheBusted(t *testing.T) {
+	h, svc, _ := newTestHandler(t)
+	if _, err := svc.Create(context.Background(), CreateInput{
+		Slug: "cb", Title: "Cb", IsDefault: true,
+	}); err != nil {
+		t.Fatalf("create: %v", err)
+	}
+	body := fetchPublicPage(t, h, "cb")
+	v := AssetVersion()
+	if v == "" {
+		t.Fatal("AssetVersion empty")
+	}
+	for _, needle := range []string{
+		"/static/css/status.css?v=" + v,
+		"/static/js/status.js?v=" + v,
+	} {
+		if !strings.Contains(body, needle) {
+			t.Errorf("asset reference %q missing; cached browsers will keep old JS/CSS", needle)
+		}
+	}
+}
+
 func indexAll(s, sub string) []int {
 	var out []int
 	for i := 0; ; {
