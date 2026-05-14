@@ -30,7 +30,10 @@
   <p class="component-monitors-hint">{{ len .Monitors }} monitor{{ if ne (len .Monitors) 1 }}s{{ end }} - click to view</p>
   {{- end }}
 </li>
-{{- if $hasMonitors }}
+{{- end -}}
+
+{{- define "component_monitors_dialog.html" -}}
+{{- if and .Monitors (ne .ShowMonitors "off") }}
 <dialog class="monitors-dialog" data-monitors-dialog="{{ .ID }}">
   <form method="dialog" class="monitors-dialog-head">
     <h2 class="monitors-dialog-title">{{ .Name }}</h2>

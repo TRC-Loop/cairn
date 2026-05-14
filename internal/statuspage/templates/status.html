@@ -22,7 +22,7 @@
   {{- if .ShowHistory }}
   <div class="masthead-actions">
     <button type="button" class="history-button" data-action="open-history">
-      View 30-day history
+      History
     </button>
   </div>
   {{- end }}
@@ -49,6 +49,10 @@
   {{- end }}
   </ul>
 </section>
+
+{{- range .Components }}
+  {{ template "component_monitors_dialog.html" . }}
+{{- end }}
 
 {{- if .DirectMonitors }}
 <section class="panel" aria-labelledby="monitors-h">
