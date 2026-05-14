@@ -131,9 +131,11 @@ type pageView struct {
 }
 
 type directMonitorView struct {
-	ID     int64  `json:"id"`
-	Name   string `json:"name"`
-	Status string `json:"status"`
+	ID            int64       `json:"id"`
+	Name          string      `json:"name"`
+	Status        string      `json:"status"`
+	History       []DayStatus `json:"history_90d,omitempty"`
+	UptimePercent string      `json:"-"`
 }
 
 type componentView struct {
@@ -422,7 +424,14 @@ func (h *Handler) buildPageView(ctx context.Context, page store.StatusPage, acce
 					if st == "" {
 						st = "unknown"
 					}
-					monitors = append(monitors, directMonitorView{ID: ck.ID, Name: ck.Name, Status: st})
+					mh, _ := h.service.HistoryForCheck(ctx, ck.ID, historyDays)
+					monitors = append(monitors, directMonitorView{
+						ID:            ck.ID,
+						Name:          ck.Name,
+						Status:        st,
+						History:       mh,
+						UptimePercent: UptimePercent(mh),
+					})
 				}
 			}
 		}

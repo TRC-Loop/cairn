@@ -18,9 +18,12 @@
 	import MonitorsTable from '$lib/components/monitors/MonitorsTable.svelte';
 	import MonitorDialog from '$lib/components/monitors/MonitorDialog.svelte';
 	import { listMonitors, deleteMonitor, updateMonitor, type Monitor } from '$lib/api/monitors';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import { toastError, toastSuccess } from '$lib/toast';
 
 	let monitors = $state<Monitor[]>([]);
+	let pageIdx = $state(1);
+	const PAGE_SIZE = 25;
 	let loading = $state(true);
 	let loadError = $state<string | null>(null);
 
@@ -125,10 +128,16 @@
 		</div>
 	{:else}
 		<MonitorsTable
-			{monitors}
+			monitors={monitors.slice((pageIdx - 1) * PAGE_SIZE, pageIdx * PAGE_SIZE)}
 			onEdit={openEdit}
 			onToggleEnabled={toggleEnabled}
 			onDelete={askDelete}
+		/>
+		<Pagination
+			page={pageIdx}
+			pageSize={PAGE_SIZE}
+			total={monitors.length}
+			onPageChange={(p) => (pageIdx = p)}
 		/>
 	{/if}
 </div>

@@ -27,13 +27,34 @@
   </div>
   {{- if and .Monitors (ne .ShowMonitors "off") }}
   <details class="component-monitors"{{ if eq .ShowMonitors "default_open" }} open{{ end }}>
-    <summary>Monitors</summary>
+    <summary class="component-monitors-toggle">
+      <span class="component-monitors-chevron" aria-hidden="true"></span>
+      <span class="component-monitors-label">{{ len .Monitors }} monitor{{ if ne (len .Monitors) 1 }}s{{ end }}</span>
+    </summary>
     <ul class="component-monitor-list">
       {{- range .Monitors }}
       <li class="component-monitor-row">
-        <span class="comp-dot {{ statusColor .Status }}" aria-hidden="true"></span>
-        <span class="comp-name">{{ .Name }}</span>
-        <span class="comp-status">{{ statusLabel .Status }}</span>
+        <div class="component-monitor-head">
+          <span class="component-monitor-name-wrap">
+            <span class="component-monitor-dot {{ statusColor .Status }}" aria-hidden="true"></span>
+            <span class="component-monitor-name">{{ .Name }}</span>
+          </span>
+          <span class="component-monitor-status">{{ statusLabel .Status }}</span>
+        </div>
+        {{- if .History }}
+        <div class="history" aria-label="90-day status history">
+          <div class="history-bar">
+            {{- range .History }}
+            <span class="tick {{ statusColor .Status }}" title="{{ formatTime .Date }} - {{ statusLabel .Status }}"></span>
+            {{- end }}
+          </div>
+          <div class="history-scale" aria-hidden="true">
+            <span>90 days ago</span>
+            <span class="history-uptime">{{ .UptimePercent }} uptime</span>
+            <span>Today</span>
+          </div>
+        </div>
+        {{- end }}
       </li>
       {{- end }}
     </ul>

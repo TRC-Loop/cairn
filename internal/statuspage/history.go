@@ -73,6 +73,35 @@ func (s *Service) HistoryFor(ctx context.Context, componentID int64, days int) (
 	return out, nil
 }
 
+func (s *Service) HistoryForCheck(ctx context.Context, checkID int64, days int) ([]DayStatus, error) {
+	if days <= 0 {
+		return []DayStatus{}, nil
+	}
+	today := startOfDayUTC(time.Now().UTC())
+	start := today.AddDate(0, 0, -(days - 1))
+
+	out := make([]DayStatus, days)
+	for i := 0; i < days; i++ {
+		out[i] = DayStatus{Date: start.AddDate(0, 0, i), Status: dayStatusNoData}
+	}
+	rows, err := s.q.GetDailyInRange(ctx, store.GetDailyInRangeParams{
+		CheckID:     checkID,
+		DayBucket:   start,
+		DayBucket_2: today,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("daily for check %d: %w", checkID, err)
+	}
+	for _, r := range rows {
+		idx := dayIndex(start, r.DayBucket, days)
+		if idx < 0 || idx >= days {
+			continue
+		}
+		out[idx].Status = dayFromCounts(r)
+	}
+	return out, nil
+}
+
 func (s *Service) overlayMaintenance(ctx context.Context, componentID int64, start, today time.Time, out []DayStatus) error {
 	const q = `
 SELECT mw.starts_at, mw.ends_at

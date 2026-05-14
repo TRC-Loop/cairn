@@ -137,6 +137,8 @@
 	"common.cancel": "Abbrechen",
 	"common.close": "Schließen",
 	"common.search": "Suchen",
+	"common.previous": "Zurück",
+	"common.next": "Weiter",
 	"common.save": "Speichern",
 	"common.delete": "Löschen",
 	"common.edit": "Bearbeiten",

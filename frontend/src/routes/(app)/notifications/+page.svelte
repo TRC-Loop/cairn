@@ -24,6 +24,7 @@
 	} from '$lib/components/ui/dropdown-menu';
 	import { IconDotsVertical } from '@tabler/icons-svelte';
 	import PageHeader from '$lib/components/common/PageHeader.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import NotificationChannelDialog from '$lib/components/notifications/NotificationChannelDialog.svelte';
 	import {
 		listChannels,
@@ -34,6 +35,9 @@
 	import { toastError, toastSuccess } from '$lib/toast';
 
 	let channels = $state<NotificationChannel[]>([]);
+	let pageIdx = $state(1);
+	const PAGE_SIZE = 25;
+	const pagedChannels = $derived(channels.slice((pageIdx - 1) * PAGE_SIZE, pageIdx * PAGE_SIZE));
 	let loading = $state(true);
 	let loadError = $state<string | null>(null);
 
@@ -156,7 +160,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each channels as c (c.id)}
+					{#each pagedChannels as c (c.id)}
 						<Table.Row class="cursor-pointer hover:bg-accent" onclick={() => rowClick(c)}>
 							<Table.Cell class="px-3 py-2 text-foreground">{c.name}</Table.Cell>
 							<Table.Cell class="px-3 py-2 text-muted-foreground">
@@ -195,6 +199,12 @@
 					{/each}
 				</Table.Body>
 			</Table.Root>
+			<Pagination
+				page={pageIdx}
+				pageSize={PAGE_SIZE}
+				total={channels.length}
+				onPageChange={(p) => (pageIdx = p)}
+			/>
 		</div>
 	{/if}
 </div>

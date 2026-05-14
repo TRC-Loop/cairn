@@ -19,6 +19,13 @@
     <span class="sep" aria-hidden="true">·</span>
     <span>{{ formatTime .UpdatedAt }}</span>
   </p>
+  {{- if .ShowHistory }}
+  <div class="masthead-actions">
+    <button type="button" class="history-button" onclick="document.getElementById('history-dialog').showModal()">
+      View 30-day history
+    </button>
+  </div>
+  {{- end }}
 </header>
 
 {{- range .ActiveIncidents }}
@@ -63,9 +70,12 @@
 {{- end }}
 
 {{- if .ShowHistory }}
-<details class="panel history-view" {{ if .ShowHistory }}{{ end }}>
-  <summary class="panel-title">30-day history</summary>
-  <div class="panel-body">
+<dialog id="history-dialog" class="history-dialog">
+  <form method="dialog" class="history-dialog-head">
+    <h2 class="history-dialog-title">30-day history</h2>
+    <button type="submit" class="history-dialog-close" aria-label="Close">x</button>
+  </form>
+  <div class="history-dialog-body">
     <table class="history-grid">
       <tbody>
         {{- range .Components }}
@@ -83,7 +93,7 @@
       </tbody>
     </table>
   </div>
-</details>
+</dialog>
 {{- end }}
 
 {{- if .RecentIncidents }}

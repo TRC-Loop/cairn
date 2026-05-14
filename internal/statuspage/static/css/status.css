@@ -562,6 +562,169 @@ a:hover { color: var(--accent-hover); }
   .recent-item { grid-template-columns: 1fr; }
 }
 
+/* Component show-monitors disclosure */
+.component-monitors {
+  margin-top: 10px;
+}
+.component-monitors > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  user-select: none;
+}
+.component-monitors > summary::-webkit-details-marker { display: none; }
+.component-monitors > summary:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.component-monitors-chevron {
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid currentColor;
+  transition: transform 120ms ease;
+}
+.component-monitors[open] .component-monitors-chevron {
+  transform: rotate(180deg);
+}
+.component-monitor-list {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.component-monitor-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.component-monitor-row:last-child { border-bottom: none; }
+.component-monitor-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.component-monitor-name-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.component-monitor-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.component-monitor-dot.s-up { background: var(--s-up-fg); }
+.component-monitor-dot.s-degraded { background: var(--s-degraded-fg); }
+.component-monitor-dot.s-down { background: var(--s-down-fg); }
+.component-monitor-dot.s-maintenance { background: var(--s-maint-fg); }
+.component-monitor-name {
+  color: var(--text-primary);
+  font-size: 13px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.component-monitor-status {
+  color: var(--text-tertiary);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* History modal */
+.masthead-actions {
+  margin-top: 12px;
+}
+.history-button {
+  font: inherit;
+  cursor: pointer;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.history-button:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-strong);
+}
+.history-dialog {
+  width: min(720px, 92vw);
+  max-height: 80vh;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  overflow: hidden;
+}
+.history-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.history-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+}
+.history-dialog-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.history-dialog-close {
+  font: inherit;
+  cursor: pointer;
+  width: 24px; height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+.history-dialog-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.history-dialog-body {
+  padding: 16px;
+  overflow: auto;
+  max-height: calc(80vh - 50px);
+}
+.history-grid {
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+.history-grid-name {
+  text-align: left;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-right: 10px;
+  white-space: nowrap;
+}
+.history-grid-cell {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--bg-elevated);
+}
+.history-grid-cell.s-up { background: var(--s-up-fg); }
+.history-grid-cell.s-degraded { background: var(--s-degraded-fg); }
+.history-grid-cell.s-down { background: var(--s-down-fg); }
+.history-grid-cell.s-maintenance { background: var(--s-maint-fg); }
+.history-grid-cell.s-nodata { background: var(--bg-elevated); opacity: 0.6; }
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
