@@ -1,6 +1,7 @@
 {{/* SPDX-License-Identifier: AGPL-3.0-or-later */}}
 {{- define "component_row.html" -}}
-<li class="component" data-component-id="{{ .ID }}" data-status="{{ .Status }}">
+{{- $hasMonitors := and .Monitors (ne .ShowMonitors "off") }}
+<li class="component{{ if $hasMonitors }} component-clickable{{ end }}" data-component-id="{{ .ID }}" data-status="{{ .Status }}"{{ if $hasMonitors }} data-monitors-open="{{ .ID }}" role="button" tabindex="0"{{ end }}>
   <div class="component-top">
     <div class="component-text">
       <p class="component-name">{{ .Name }}</p>
@@ -25,12 +26,17 @@
       <span>Today</span>
     </div>
   </div>
-  {{- if and .Monitors (ne .ShowMonitors "off") }}
-  <details class="component-monitors"{{ if eq .ShowMonitors "default_open" }} open{{ end }}>
-    <summary class="component-monitors-toggle">
-      <span class="component-monitors-chevron" aria-hidden="true"></span>
-      <span class="component-monitors-label">{{ len .Monitors }} monitor{{ if ne (len .Monitors) 1 }}s{{ end }}</span>
-    </summary>
+  {{- if $hasMonitors }}
+  <p class="component-monitors-hint">{{ len .Monitors }} monitor{{ if ne (len .Monitors) 1 }}s{{ end }} - click to view</p>
+  {{- end }}
+</li>
+{{- if $hasMonitors }}
+<dialog class="monitors-dialog" data-monitors-dialog="{{ .ID }}">
+  <form method="dialog" class="monitors-dialog-head">
+    <h2 class="monitors-dialog-title">{{ .Name }}</h2>
+    <button type="submit" class="monitors-dialog-close" aria-label="Close">x</button>
+  </form>
+  <div class="monitors-dialog-body">
     <ul class="component-monitor-list">
       {{- range .Monitors }}
       <li class="component-monitor-row">
@@ -58,7 +64,7 @@
       </li>
       {{- end }}
     </ul>
-  </details>
-  {{- end }}
-</li>
+  </div>
+</dialog>
+{{- end }}
 {{- end -}}
