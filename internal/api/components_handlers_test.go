@@ -26,7 +26,7 @@ func newComponentsTestServer(t *testing.T) (*httptest.Server, *store.Queries, *s
 	checksH := NewChecksHandler(q, db, logger)
 	componentSvc := component.NewService(db, q, logger)
 	componentsH := NewComponentsHandler(q, componentSvc, logger)
-	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, checksH, componentsH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
+	srv := httptest.NewServer(NewRouter(logger, db, q, nil, nil, sessionSvc, authH, nil, checksH, componentsH, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, false, "dev", "unknown"))
 	t.Cleanup(srv.Close)
 	return srv, q, db
 }

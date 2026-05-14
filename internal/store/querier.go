@@ -41,6 +41,7 @@ type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateStatusPage(ctx context.Context, arg CreateStatusPageParams) (StatusPage, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DashboardUptime24h(ctx context.Context, checkedAt time.Time) (DashboardUptime24hRow, error)
 	DeleteCheck(ctx context.Context, id int64) error
 	DeleteComponent(ctx context.Context, id int64) error
 	DeleteDailyOlderThan(ctx context.Context, dayBucket time.Time) error
@@ -118,6 +119,7 @@ type Querier interface {
 	ListFooterElements(ctx context.Context, statusPageID int64) ([]StatusPageFooterElement, error)
 	ListIncidents(ctx context.Context, arg ListIncidentsParams) ([]Incident, error)
 	ListIncidentsForCheck(ctx context.Context, arg ListIncidentsForCheckParams) ([]Incident, error)
+	ListIncidentsSince(ctx context.Context, startedAt time.Time) ([]Incident, error)
 	ListMaintenanceAll(ctx context.Context, arg ListMaintenanceAllParams) ([]MaintenanceWindow, error)
 	ListMaintenanceBetween(ctx context.Context, arg ListMaintenanceBetweenParams) ([]MaintenanceWindow, error)
 	ListMaintenanceFiltered(ctx context.Context, arg ListMaintenanceFilteredParams) ([]MaintenanceWindow, error)

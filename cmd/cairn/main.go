@@ -217,11 +217,12 @@ func main() {
 	backupHandler := api.NewBackupHandler(backupSvc, logger)
 	twofaHandler := api.NewTwoFAHandler(q, sessionSvc, secretBox, logger, cfg.BehindTLS)
 	dbStatsHandler := api.NewDBStatsHandler(db, q, cfg.DatabasePath, logger)
+	dashboardHandler := api.NewDashboardHandler(q, logger)
 	authHandler.SetTwoFA(twofaHandler)
 
 	srv := &http.Server{
 		Addr:              cfg.ListenAddr,
-		Handler:           api.NewRouter(logger, db, q, incidentSvc, statusPageHandler, sessionSvc, authHandler, setupHandler, checksHandler, componentsHandler, statusPagesHandler, statusPageDomainsHandler, notificationsHandler, incidentsHandler, maintenanceHandler, usersHandler, systemSettingsHandler, retentionSettingsHandler, backupHandler, twofaHandler, dbStatsHandler, cfg.BehindTLS, cairnVersion, cairnRevision),
+		Handler:           api.NewRouter(logger, db, q, incidentSvc, statusPageHandler, sessionSvc, authHandler, setupHandler, checksHandler, componentsHandler, statusPagesHandler, statusPageDomainsHandler, notificationsHandler, incidentsHandler, maintenanceHandler, usersHandler, systemSettingsHandler, retentionSettingsHandler, backupHandler, twofaHandler, dbStatsHandler, dashboardHandler, cfg.BehindTLS, cairnVersion, cairnRevision),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 

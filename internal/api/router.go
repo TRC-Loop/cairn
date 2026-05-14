@@ -45,6 +45,7 @@ func NewRouter(
 	backupHandler *BackupHandler,
 	twofaHandler *TwoFAHandler,
 	dbStatsHandler *DBStatsHandler,
+	dashboardHandler *DashboardHandler,
 	behindTLS bool,
 	version, revision string,
 ) http.Handler {
@@ -193,6 +194,10 @@ func NewRouter(
 						r.Use(auth.RequireRole(auth.RoleAdmin, logger))
 						r.Get("/system/db-stats", dbStatsHandler.Get)
 					})
+				}
+
+				if dashboardHandler != nil {
+					r.Get("/dashboard", dashboardHandler.Get)
 				}
 
 				if backupHandler != nil {
