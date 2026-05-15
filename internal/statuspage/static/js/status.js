@@ -4,8 +4,6 @@
 (function () {
   "use strict";
 
-  wireDialogs();
-
   var root = document.querySelector("main.shell");
   if (!root) return;
 
@@ -76,48 +74,6 @@
     if (s === "down") return "Down";
     if (s === "maintenance") return "Maintenance";
     return "Unknown";
-  }
-
-  function wireDialogs() {
-    document.addEventListener("click", function (e) {
-      var target = e.target;
-      if (!(target instanceof Element)) return;
-
-      var historyBtn = target.closest('[data-action="open-history"]');
-      if (historyBtn) {
-        var hd = document.getElementById("history-dialog");
-        if (hd && typeof hd.showModal === "function") {
-          e.preventDefault();
-          hd.showModal();
-        }
-        return;
-      }
-
-      var row = target.closest('[data-monitors-open]');
-      if (row) {
-        var id = row.getAttribute("data-monitors-open");
-        var dlg = document.querySelector('[data-monitors-dialog="' + id + '"]');
-        if (dlg && typeof dlg.showModal === "function") {
-          e.preventDefault();
-          dlg.showModal();
-        }
-      }
-    });
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key !== "Enter" && e.key !== " ") return;
-      var target = e.target;
-      if (!(target instanceof Element)) return;
-      var row = target.closest('[data-monitors-open]');
-      if (row && target === row) {
-        var id = row.getAttribute("data-monitors-open");
-        var dlg = document.querySelector('[data-monitors-dialog="' + id + '"]');
-        if (dlg && typeof dlg.showModal === "function") {
-          e.preventDefault();
-          dlg.showModal();
-        }
-      }
-    });
   }
 
   function poll() {

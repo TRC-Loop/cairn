@@ -48,7 +48,7 @@ func TestPublicPageHasNoInlineEventHandlers(t *testing.T) {
 	}
 }
 
-func TestPublicPageNoDialogInsideList(t *testing.T) {
+func TestPublicPageNoModalInsideList(t *testing.T) {
 	h, svc, q := newTestHandler(t)
 	ctx := context.Background()
 	page, err := svc.Create(ctx, CreateInput{Slug: "dlg", Title: "Dlg", IsDefault: true})
@@ -66,25 +66,22 @@ func TestPublicPageNoDialogInsideList(t *testing.T) {
 
 	body := fetchPublicPage(t, h, "dlg")
 
-	// Invalid nesting: <dialog> as direct or nested child of <ul> causes
-	// browsers to relocate it, which broke the monitors modal and footer.
 	listOpens := indexAll(body, "<ul")
 	listCloses := indexAll(body, "</ul>")
-	dialogOpens := indexAll(body, "<dialog")
-	for _, d := range dialogOpens {
+	for _, m := range regexp.MustCompile(`<div[^>]*class="modal"`).FindAllStringIndex(body, -1) {
 		depth := 0
 		for _, o := range listOpens {
-			if o < d {
+			if o < m[0] {
 				depth++
 			}
 		}
 		for _, c := range listCloses {
-			if c < d {
+			if c < m[0] {
 				depth--
 			}
 		}
 		if depth > 0 {
-			t.Fatalf("<dialog> at offset %d is inside an open <ul>; browsers will relocate it", d)
+			t.Fatalf("modal at offset %d is inside an open <ul>", m[0])
 		}
 	}
 }
@@ -121,15 +118,15 @@ func TestPublicPageHistoryButtonLabel(t *testing.T) {
 		t.Fatalf("flags: %v", err)
 	}
 	body := fetchPublicPage(t, h, "hb")
-	if !strings.Contains(body, `data-action="open-history"`) {
-		t.Fatal("history trigger missing")
+	if !regexp.MustCompile(`<a[^>]*href="#history-modal"[^>]*>\s*History\s*</a>`).MatchString(body) {
+		t.Fatal("history button must be an <a href=\"#history-modal\"> labelled 'History' (CSS :target opens the modal without JS)")
 	}
-	if !regexp.MustCompile(`(?s)data-action="open-history"[^>]*>\s*History\s*<`).MatchString(body) {
-		t.Fatal("history button should be labelled 'History'")
+	if !regexp.MustCompile(`id="history-modal"`).MatchString(body) {
+		t.Fatal("history modal target missing")
 	}
 }
 
-func TestMonitorDialogIdMatchesComponentTrigger(t *testing.T) {
+func TestComponentLinkOverlayTargetsExistingModal(t *testing.T) {
 	h, svc, q := newTestHandler(t)
 	ctx := context.Background()
 	page, err := svc.Create(ctx, CreateInput{Slug: "match", Title: "Match", IsDefault: true})
@@ -146,14 +143,14 @@ func TestMonitorDialogIdMatchesComponentTrigger(t *testing.T) {
 	}
 
 	body := fetchPublicPage(t, h, "match")
-	openers := regexp.MustCompile(`data-monitors-open="(\d+)"`).FindAllStringSubmatch(body, -1)
-	if len(openers) == 0 {
-		t.Fatal("no data-monitors-open attributes; nothing would open")
+	links := regexp.MustCompile(`href="#component-modal-(\d+)"`).FindAllStringSubmatch(body, -1)
+	if len(links) == 0 {
+		t.Fatal("no component-modal link; nothing would open")
 	}
-	for _, m := range openers {
-		needle := `data-monitors-dialog="` + m[1] + `"`
+	for _, m := range links {
+		needle := `id="component-modal-` + m[1] + `"`
 		if !strings.Contains(body, needle) {
-			t.Errorf("trigger for component %s has no matching dialog", m[1])
+			t.Errorf("link to #component-modal-%s has no matching target element", m[1])
 		}
 	}
 }

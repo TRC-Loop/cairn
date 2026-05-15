@@ -21,9 +21,7 @@
   </p>
   {{- if .ShowHistory }}
   <div class="masthead-actions">
-    <button type="button" class="history-button" data-action="open-history">
-      History
-    </button>
+    <a class="history-button" href="#history-modal">History</a>
   </div>
   {{- end }}
 </header>
@@ -74,30 +72,33 @@
 {{- end }}
 
 {{- if .ShowHistory }}
-<dialog id="history-dialog" class="history-dialog">
-  <form method="dialog" class="history-dialog-head">
-    <h2 class="history-dialog-title">30-day history</h2>
-    <button type="submit" class="history-dialog-close" aria-label="Close">x</button>
-  </form>
-  <div class="history-dialog-body">
-    <table class="history-grid">
-      <tbody>
-        {{- range .Components }}
-        {{- $h := .History }}
-        {{- $len := len $h }}
-        {{- $start := 0 }}
-        {{- if gt $len 30 }}{{ $start = sub $len 30 }}{{ end }}
-        <tr>
-          <th scope="row" class="history-grid-name">{{ .Name }}</th>
-          {{- range slice $h $start $len }}
-          <td class="history-grid-cell {{ statusColor .Status }}" title="{{ formatTime .Date }} - {{ statusLabel .Status }}"></td>
+<div id="history-modal" class="modal" aria-hidden="true">
+  <a class="modal-backdrop" href="#" aria-label="Close"></a>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="history-modal-title">
+    <div class="modal-head">
+      <h2 id="history-modal-title" class="modal-title">30-day history</h2>
+      <a class="modal-close" href="#" aria-label="Close">x</a>
+    </div>
+    <div class="modal-body">
+      <table class="history-grid">
+        <tbody>
+          {{- range .Components }}
+          {{- $h := .History }}
+          {{- $len := len $h }}
+          {{- $start := 0 }}
+          {{- if gt $len 30 }}{{ $start = sub $len 30 }}{{ end }}
+          <tr>
+            <th scope="row" class="history-grid-name">{{ .Name }}</th>
+            {{- range slice $h $start $len }}
+            <td class="history-grid-cell {{ statusColor .Status }}" title="{{ formatTime .Date }} - {{ statusLabel .Status }}"></td>
+            {{- end }}
+          </tr>
           {{- end }}
-        </tr>
-        {{- end }}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
-</dialog>
+</div>
 {{- end }}
 
 {{- if .RecentIncidents }}
