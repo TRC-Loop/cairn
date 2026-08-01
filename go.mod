@@ -9,13 +9,13 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.27
 	github.com/pquerna/otp v1.5.0
 	github.com/pressly/goose/v3 v3.27.1
-	github.com/prometheus-community/pro-bing v0.8.0
+	github.com/prometheus-community/pro-bing v0.9.1
 	github.com/redis/go-redis/v9 v9.19.0
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/tidwall/gjson v1.19.0
 	github.com/yuin/goldmark v1.8.2
-	golang.org/x/crypto v0.50.0
-	golang.org/x/term v0.43.0
+	golang.org/x/crypto v0.53.0
+	golang.org/x/term v0.44.0
 	google.golang.org/grpc v1.80.0
 	modernc.org/sqlite v1.49.1
 )
@@ -40,10 +40,10 @@ require (
 	github.com/tidwall/pretty v1.2.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/net v0.53.0 // indirect
-	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.44.0 // indirect
-	golang.org/x/text v0.36.0 // indirect
+	golang.org/x/net v0.56.0 // indirect
+	golang.org/x/sync v0.21.0 // indirect
+	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/text v0.38.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260420184626-e10c466a9529 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	modernc.org/libc v1.72.1 // indirect
